@@ -80,7 +80,7 @@ public class Board {
 	public int getPositionIndex(char y, int x) {
 		int arrayNum = -1;
 		if (y >= 'A' && y <= 'E') {
-			arrayNum = ((y-1)*WIDTH) + (x-1);
+			arrayNum = ((y-'A')*WIDTH) + (x-1);
 		}
 		return arrayNum;
 	}
