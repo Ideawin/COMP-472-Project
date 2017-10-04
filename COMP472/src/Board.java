@@ -2,6 +2,7 @@
 public class Board {
 	final int WIDTH = 9;
 	final int HEIGHT = 5;
+	int maxConsecutiveMoves = 10;
 	char[] boardArr;
 	
 	/**
@@ -55,11 +56,15 @@ public class Board {
 	 * @param y
 	 * @param token 'R' or 'G'
 	 */
-	public void moveToken(int currentPos, int oldPos, char token) {
+	public void moveToken(int newPos, int oldPos, char token) {
+		// Check if it's your turn
+		// Check if even or odd
+		// Check direction of new position
 		if (boardArr[oldPos] == ' ') {
 			boardArr[oldPos] = token;
-			boardArr[currentPos] = ' ';
+			boardArr[newPos] = ' ';
 		}
+		// Check if you can attack and how many tokens can be killed
 	}
 	
 	/**
