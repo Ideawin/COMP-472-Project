@@ -88,13 +88,14 @@ public class Board {
 	}
 	/**
 	 * * Method to verify if a tile on a board is empty
-	 * @param pos
+	 * @param row index
+	 * @param col index
 	 * @return true if empty, false otherwise
 	 
 	 */
-	/*public boolean isEmpty(int pos) {
-		return boardArr[pos] == ' ';
-	}*/
+	public boolean isEmpty(int row, int col) {
+		return boardArr[row][col] == ' ';
+	}
 	
 	/**
 	 * Method to get the position index of a tile on the board
