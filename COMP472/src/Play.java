@@ -80,7 +80,7 @@ public class Play {
 			
 			// Switch turn
 			tokenG = !tokenG;
-			if (bonzeeBoard.getMaxConsecutiveMoves() > 0)
+			if (bonzeeBoard.getMaxConsecutiveMoves() == 0)
 				System.out.println("10 non-attacking consecutive moves have been made. The game is DRAW.");
 		}
 //		scanner.close();
