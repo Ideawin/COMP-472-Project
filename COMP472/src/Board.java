@@ -47,9 +47,11 @@ public class Board {
 	 * Method to display contents of the board
 	 */
 	public void displayBoard() {
+		System.out.println("\t1\t2\t3\t4\t5\t6\t7\t8\t9");
 		for (int i = 0; i < HEIGHT; i++) {
+			System.out.print(((char)(i + 'A')) + "\t");
 			for (int j = 0; j < WIDTH; j++)  
-				System.out.print(boardArr[i][j] + " "); // \t
+				System.out.print(boardArr[i][j] + "\t"); // \t
 			System.out.println();
 		}
 	}
@@ -87,10 +89,10 @@ public class Board {
 				else
 				{
 					// Set old cell to empty
-					boardArr[oldX][oldY] = ' ';
+					boardArr[oldYPos][oldXPos] = ' ';
 					// Set new cell to the token color
-					boardArr[newX][newY] = tokenToMove;
-					// Check if you can attack and how many tokens can be killed
+					boardArr[newYPos][newXPos] = tokenToMove;
+					// Attack
 				}
 			}
 
@@ -123,7 +125,7 @@ public class Board {
 
 	 */
 	public boolean isEmpty(int positionX, int positionY) {
-		return boardArr[positionX][positionY] == ' ';
+		return boardArr[positionY][positionX] == ' ';
 	}
 
 	/**
