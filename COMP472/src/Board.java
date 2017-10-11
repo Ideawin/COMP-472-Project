@@ -174,7 +174,7 @@ public class Board {
 		}
 		else if (xVector == 0 && yVector > 0) {
 			// Down
-			consecutiveAttack(i, j++, token, 'D');
+			consecutiveAttack(i, ++j, token, 'D');
 		}
 		else if (xVector == 0 && yVector < 0) {
 			// Up
@@ -184,7 +184,7 @@ public class Board {
 	
 	// Recursive method
 	public void consecutiveAttack(int i, int j, char token, char direction) {
-		if (i < 0 || i >= HEIGHT || j < 0 || j >= WIDTH) {
+		if (i < 0 || i >= WIDTH || j < 0 || j >= HEIGHT) {
 			System.out.println("Out of bounds!!!!!!");
 			return;
 		}
@@ -214,7 +214,7 @@ public class Board {
 			if (boardArr[j][i] != token) {
 				boardArr[j][i] = ' ';
 			}
-			consecutiveAttack(i, j++, token, direction);
+			consecutiveAttack(i,++j, token, direction);
 		}
 		else if (direction == 'U') {
 			if (boardArr[j][i] != token) {
