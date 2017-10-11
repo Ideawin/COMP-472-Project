@@ -1,3 +1,4 @@
+import java.util.List;
 
 public class Board {
 	final int WIDTH = 9;
@@ -89,11 +90,10 @@ public class Board {
 					boardArr[oldX][oldY] = ' ';
 					// Set new cell to the token color
 					boardArr[newX][newY] = tokenToMove;
-					// Attack
+					// Check if you can attack and how many tokens can be killed
 				}
 			}
 
-			// Check if you can attack and how many tokens can be killed
 			else
 				System.out.println("You cannot move this token. >:(");
 		}
@@ -137,7 +137,105 @@ public class Board {
 		return boardArr[yPos][xPos];
 	}
 	
-	public void attack(int xVector, int yVector, char token) {
+	
+	public void attack(int positionX, int positionY, int xVector, int yVector, char token) {
+		int i = positionX;
+		int j = positionY;
+		// Diagonal moves
+		if (xVector > 0 && yVector > 0) {
+			// Diagonal right-down
+			consecutiveAttack(i, j, token, 'X');
+		} 
+		else if (xVector > 0 && yVector < 0) {
+			// Diagonal right-up
+			consecutiveAttack(i, j, token, 'E');
+		}
+		else if (xVector < 0 && yVector > 0) {
+			// Diagonal left-down
+			consecutiveAttack(i, j, token, 'Z');
+		}
+		else if (xVector < 0 && yVector < 0) {
+			// Diagonal left-up
+			consecutiveAttack(i, j, token, 'Q');
+		}
 		
+		// Horizontal/Vertical
+		else if (xVector > 0 && yVector == 0) {
+			// Right
+			consecutiveAttack(i, j, token, 'R');
+		}
+		else if (xVector < 0 && yVector == 0) {
+			// Left
+			consecutiveAttack(i, j, token, 'L');
+		}
+		else if (xVector == 0 && yVector > 0) {
+			// Down
+			consecutiveAttack(i, j, token, 'D');
+		}
+		else if (xVector == 0 && yVector < 0) {
+			// Up
+			consecutiveAttack(i, j, token, 'U');
+		}
+	}
+	
+	// Recursive method
+	public void consecutiveAttack(int i, int j, char token, char direction) {
+		if (i < 0 || i > WIDTH || j < 0 || j > HEIGHT)
+			return;
+		if (boardArr[i][j] == ' ')
+			return;
+		else if (direction == 'L') {
+			if (boardArr[i][j] != token) {
+				boardArr[i][j] = ' ';
+			}
+			consecutiveAttack(i--, j, token, direction);
+		}
+		else if (direction == 'R') {
+			if (boardArr[i][j] != token) {
+				boardArr[i][j] = ' ';
+			}
+			consecutiveAttack(i++, j, token, direction);
+		}
+		else if (direction == 'D') {
+			if (boardArr[i][j] != token) {
+				boardArr[i][j] = ' ';
+			}
+			consecutiveAttack(i, j++, token, direction);
+		}
+		else if (direction == 'U') {
+			if (boardArr[i][j] != token) {
+				boardArr[i][j] = ' ';
+			}
+			consecutiveAttack(i, j--, token, direction);
+		}
+		// Diagonals
+		// Top-left
+		else if (direction == 'Q') {
+			if (boardArr[i][j] != token) {
+				boardArr[i][j] = ' ';
+			}
+			consecutiveAttack(i--, j--, token, direction);
+		}
+		// Top-right
+		else if (direction == 'E') {
+			if (boardArr[i][j] != token) {
+				boardArr[i][j] = ' ';
+			}
+			consecutiveAttack(i++, j--, token, direction);
+		}
+		// Down-left
+		else if (direction == 'Z') {
+			if (boardArr[i][j] != token) {
+				boardArr[i][j] = ' ';
+			}
+			consecutiveAttack(i--, j++, token, direction);
+		}
+		// Down-right
+		else if (direction == 'X') {
+			if (boardArr[i][j] != token) {
+				boardArr[i][j] = ' ';
+			}
+			consecutiveAttack(i++, j++, token, direction);
+		}
 	}
 }
