@@ -93,6 +93,7 @@ public class Board {
 					// Set new cell to the token color
 					boardArr[newYPos][newXPos] = tokenToMove;
 					// Attack
+					attack(newYPos,newXPos,xVector,yVector,token);
 				}
 			}
 
@@ -140,102 +141,113 @@ public class Board {
 	}
 	
 	
-	public void attack(int positionX, int positionY, int xVector, int yVector, char token) {
+	public void attack(int positionY, int positionX, int xVector, int yVector, char token) {
 		int i = positionX;
 		int j = positionY;
 		// Diagonal moves
 		if (xVector > 0 && yVector > 0) {
 			// Diagonal right-down
-			consecutiveAttack(i, j, token, 'X');
+			consecutiveAttack(i++, j++, token, 'X');
 		} 
 		else if (xVector > 0 && yVector < 0) {
 			// Diagonal right-up
-			consecutiveAttack(i, j, token, 'E');
+			consecutiveAttack(i++, j--, token, 'E');
 		}
 		else if (xVector < 0 && yVector > 0) {
 			// Diagonal left-down
-			consecutiveAttack(i, j, token, 'Z');
+			consecutiveAttack(i--, j++, token, 'Z');
 		}
 		else if (xVector < 0 && yVector < 0) {
 			// Diagonal left-up
-			consecutiveAttack(i, j, token, 'Q');
+			consecutiveAttack(i--, j--, token, 'Q');
 		}
 		
 		// Horizontal/Vertical
 		else if (xVector > 0 && yVector == 0) {
 			// Right
-			consecutiveAttack(i, j, token, 'R');
+			System.out.println("attack method i=" + i );
+			consecutiveAttack(++i, j, token, 'R');
 		}
 		else if (xVector < 0 && yVector == 0) {
 			// Left
-			consecutiveAttack(i, j, token, 'L');
+			consecutiveAttack(i--, j, token, 'L');
 		}
 		else if (xVector == 0 && yVector > 0) {
 			// Down
-			consecutiveAttack(i, j, token, 'D');
+			consecutiveAttack(i, j++, token, 'D');
 		}
 		else if (xVector == 0 && yVector < 0) {
 			// Up
-			consecutiveAttack(i, j, token, 'U');
+			consecutiveAttack(i, j--, token, 'U');
 		}
 	}
 	
 	// Recursive method
 	public void consecutiveAttack(int i, int j, char token, char direction) {
-		if (i < 0 || i > WIDTH || j < 0 || j > HEIGHT)
+		if (i < 0 || i >= HEIGHT || j < 0 || j >= WIDTH) {
+			System.out.println("Out of bounds!!!!!!");
 			return;
-		if (boardArr[i][j] == ' ')
+		}
+		if (boardArr[j][i] == ' ') {
+			System.out.println("consecutive attack empty method i=" + i );
+			System.out.println("Empty cell");
 			return;
+		}
+		if (boardArr[j][i] == token) {
+			System.out.println("consecutive attack equal token method i=" + i );
+			System.out.println("Same token");
+			return;
+		}
 		else if (direction == 'L') {
-			if (boardArr[i][j] != token) {
-				boardArr[i][j] = ' ';
+			if (boardArr[j][i] != token) {
+				boardArr[j][i] = ' ';
 			}
 			consecutiveAttack(i--, j, token, direction);
 		}
 		else if (direction == 'R') {
-			if (boardArr[i][j] != token) {
-				boardArr[i][j] = ' ';
-			}
-			consecutiveAttack(i++, j, token, direction);
+			System.out.println("consecutive attack equal to R method i=" + i );
+			boardArr[j][i] = ' ';
+			consecutiveAttack(++i, j, token, direction);
+			
 		}
 		else if (direction == 'D') {
-			if (boardArr[i][j] != token) {
-				boardArr[i][j] = ' ';
+			if (boardArr[j][i] != token) {
+				boardArr[j][i] = ' ';
 			}
 			consecutiveAttack(i, j++, token, direction);
 		}
 		else if (direction == 'U') {
-			if (boardArr[i][j] != token) {
-				boardArr[i][j] = ' ';
+			if (boardArr[j][i] != token) {
+				boardArr[j][i] = ' ';
 			}
 			consecutiveAttack(i, j--, token, direction);
 		}
 		// Diagonals
 		// Top-left
 		else if (direction == 'Q') {
-			if (boardArr[i][j] != token) {
-				boardArr[i][j] = ' ';
+			if (boardArr[j][i] != token) {
+				boardArr[j][i] = ' ';
 			}
 			consecutiveAttack(i--, j--, token, direction);
 		}
 		// Top-right
 		else if (direction == 'E') {
-			if (boardArr[i][j] != token) {
-				boardArr[i][j] = ' ';
+			if (boardArr[j][i] != token) {
+				boardArr[j][i] = ' ';
 			}
 			consecutiveAttack(i++, j--, token, direction);
 		}
 		// Down-left
 		else if (direction == 'Z') {
-			if (boardArr[i][j] != token) {
-				boardArr[i][j] = ' ';
+			if (boardArr[j][i] != token) {
+				boardArr[j][i] = ' ';
 			}
 			consecutiveAttack(i--, j++, token, direction);
 		}
 		// Down-right
 		else if (direction == 'X') {
-			if (boardArr[i][j] != token) {
-				boardArr[i][j] = ' ';
+			if (boardArr[j][i] != token) {
+				boardArr[j][i] = ' ';
 			}
 			consecutiveAttack(i++, j++, token, direction);
 		}
