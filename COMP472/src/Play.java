@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 public class Play {
-
+	private static boolean moved = false;
 	private static Board bonzeeBoard;
 	public static void main(String[] args) {
 		bonzeeBoard = new Board();
@@ -68,8 +68,11 @@ public class Play {
 						
 						// Call the game
 						if(initialX != -1 && finalX != -1) {
-							bonzeeBoard.moveToken(initialY, initialX, finalY, finalX, tokenG ? 'G' : 'R');
-							bonzeeBoard.displayBoard();
+							moved = bonzeeBoard.moveToken(initialY, initialX, finalY, finalX, tokenG ? 'G' : 'R');
+							if (moved)
+								bonzeeBoard.displayBoard();
+							else
+								continue;
 						}
 					}
 				}

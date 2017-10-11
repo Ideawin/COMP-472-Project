@@ -62,7 +62,7 @@ public class Board {
 	 * @param y
 	 * @param token 'R' or 'G'
 	 */
-	public void moveToken(char oldY, int oldX, char newY, int newX, char tokenToMove) {
+	public boolean moveToken(char oldY, int oldX, char newY, int newX, char tokenToMove) {
 	
 		// Convert positions into index
 		int oldYPos = oldY - 'A';
@@ -80,11 +80,11 @@ public class Board {
 				boolean isBlack = blackCell(oldXPos,oldYPos);
 				// If next move is not horizontal/vertical and is white
 				if (direction > 1 && !isBlack) {
-					return;
+					return false;
 				}
 				// If next move is not adjacent
 				if (direction > 2) {
-					return;
+					return false;
 				}
 				else
 				{
@@ -94,14 +94,19 @@ public class Board {
 					boardArr[newYPos][newXPos] = tokenToMove;
 					// Attack
 					attack(newYPos,newXPos,xVector,yVector,token);
+					return true;
 				}
 			}
 
-			else
-				System.out.println("You cannot move this token. >:(");
+			else {
+				System.out.println("You cannot move the opponent's token. Try again.");
+				return false;
+			}
 		}
-		else
-			System.out.println("This cell is not empty!!!");
+		else {
+			System.out.println("Cannot move this token. Try again.");
+			return false;
+		}
 		
 	}
 
