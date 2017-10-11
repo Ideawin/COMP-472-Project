@@ -152,45 +152,88 @@ public class Board {
 		return boardArr[yPos][xPos];
 	}
 	
-	
+	/**
+	 * Method to perform an attack by checking the direction of the user's move.
+	 * A call to a recursive function is done to remove consecutive tokens.
+	 * @param positionY
+	 * @param positionX
+	 * @param xVector
+	 * @param yVector
+	 * @param token
+	 */
 	public void attack(int positionY, int positionX, int xVector, int yVector, char token) {
 		int i = positionX;
 		int j = positionY;
 		int ctr = 0;
-		// Diagonal moves
+		
+		// DIAGONAL MOVES
+		
 		if (xVector > 0 && yVector > 0) {
-			// Diagonal right-down
-			ctr = consecutiveAttack(++i, j++, token, 'X', 0);
+			// Forward attack: Diagonal right-down
+			ctr = consecutiveAttack(i+1, j+1, token, 'X', 0);
+			if (ctr == 0) {
+				// Backward attack: Diagonal left-up
+				ctr = consecutiveAttack(i-2, j-2, token, 'Q', 0);
+			}
 		} 
 		else if (xVector > 0 && yVector < 0) {
-			// Diagonal right-up
-			ctr = consecutiveAttack(++i, --j, token, 'E', 0);
+			// Forward attack: Diagonal right-up
+			ctr = consecutiveAttack(i+1, j-1, token, 'E', 0);
+			if (ctr == 0) {
+				// Backward attack: Diagonal left-down
+				ctr = consecutiveAttack(i-2, j+2, token, 'Z', 0);
+			}
 		}
 		else if (xVector < 0 && yVector > 0) {
-			// Diagonal left-down
-			ctr = consecutiveAttack(--i, ++j, token, 'Z', 0);
+			// Forward attack: Diagonal left-down
+			ctr = consecutiveAttack(i-1, j+1, token, 'Z', 0);
+			if (ctr == 0) {
+				// Backward attack: Diagonal right-up
+				ctr = consecutiveAttack(i+2, j-2, token, 'E', 0);
+			}
 		}
 		else if (xVector < 0 && yVector < 0) {
-			// Diagonal left-up
-			ctr = consecutiveAttack(--i, --j, token, 'Q', 0);
+			// Forward attack: Diagonal left-up
+			ctr = consecutiveAttack(i-1, j-1, token, 'Q', 0);
+			if (ctr == 0) {
+				// Backward attack: Diagonal right-down
+				ctr = consecutiveAttack(i+2, j+2, token, 'X', 0);
+			}
 		}
 		
-		// Horizontal/Vertical
+		// HORIZONTAL/VERTICAL MOVES
+		
 		else if (xVector > 0 && yVector == 0) {
-			// Right
-			ctr = consecutiveAttack(++i, j, token, 'R', 0);
+			// Forward attack: Right
+			ctr = consecutiveAttack(i+1, j, token, 'R', 0);
+			if (ctr == 0) {
+				// Backward attack: Left
+				ctr = consecutiveAttack(i-2, j, token, 'L', 0);
+			}
 		}
 		else if (xVector < 0 && yVector == 0) {
-			// Left
-			ctr = consecutiveAttack(--i, j, token, 'L', 0);
+			// Forward attack: Left
+			ctr = consecutiveAttack(i-1, j, token, 'L', 0);
+			if (ctr == 0) {
+				// Backward attack: Right
+				ctr = consecutiveAttack(i+2, j, token, 'R', 0);
+			}
 		}
 		else if (xVector == 0 && yVector > 0) {
-			// Down
-			ctr = consecutiveAttack(i, ++j, token, 'D', 0);
+			// Forward attack: Down
+			ctr = consecutiveAttack(i, j+1, token, 'D', 0);
+			if (ctr == 0) {
+				// Backward attack: Up
+				ctr = consecutiveAttack(i, j-2, token, 'U', 0);
+			}
 		}
 		else if (xVector == 0 && yVector < 0) {
-			// Up
-			ctr = consecutiveAttack(i, --j, token, 'U', 0);
+			// Forward attack: Up
+			ctr = consecutiveAttack(i, j-1, token, 'U', 0);
+			if (ctr == 0) {
+				// Backward attack: Down
+				ctr = consecutiveAttack(i, j+2, token, 'D', 0);
+			}
 		}
 		if (ctr == 0) {
 			maxConsecutiveMoves--;
