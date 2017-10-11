@@ -4,18 +4,16 @@ public class Board {
 	final int HEIGHT = 5;
 	int maxConsecutiveMoves = 10;
 	char[][] boardArr;
-		
+
 	/**
 	 * Constructor
 	 */
 	public Board() {
 		// Create a new board
 		boardArr = new char[HEIGHT][WIDTH];
-		
-		
-		//black and white positions
-		
-		
+
+		// Black and white positions
+
 		/*
 		for (int i = 0; i < HEIGHT; i++) {
 			for (int j = 0; j < WIDTH; j++) {
@@ -24,11 +22,10 @@ public class Board {
 				else  boardArr[i] [j] = 'W';
 			}
 		} 
-	 */
-			
-		
+		 */
+
 		// Set tokens on the board
-		
+
 		for (int i = 0; i < HEIGHT; i++) {
 			for (int j = 0; j < WIDTH; j++) {
 				if (i == 0 || i == 1)
@@ -44,7 +41,7 @@ public class Board {
 		}
 	}
 
-	
+
 	/**
 	 * Method to display contents of the board
 	 */
@@ -55,48 +52,80 @@ public class Board {
 			System.out.println();
 		}
 	}
-	
+
 	/**
 	 * Method to set a token on the board
 	 * @param x
 	 * @param y
 	 * @param token 'R' or 'G'
 	 */
-	/*public void moveToken(int newPos, int oldPos, char token) {
-		// Check if it's your turn
-		// Check if even or odd
-		// Check direction of new position
-		if (boardArr[oldPos] == ' ') {
-			boardArr[oldPos] = token;
-			boardArr[newPos] = ' ';
-		}
-		// Check if you can attack and how many tokens can be killed
-	}*/
+	public void moveToken(char oldY, int oldX, char newY, int newX, char tokenToMove) {
 	
+		// Convert positions into index
+		int oldYPos = oldY - 'A';
+		int oldXPos = oldX - 1;
+		int newYPos = newY - 'A';
+		int newXPos = newX - 1;
+
+		if (isEmpty(newXPos, newYPos)) {
+			// Check if it's your turn
+			char token = getTokenAtPosition(oldY,oldX);
+			if (token == tokenToMove) {
+				int xVector = newX - oldX;
+				int yVector =  newY - oldY;
+				int direction = Math.abs(xVector) + Math.abs(yVector);
+				boolean isBlack = blackCell(oldXPos,oldYPos);
+				// If next move is not horizontal/vertical and is white
+				if (direction > 1 && !isBlack) {
+					return;
+				}
+				// If next move is not adjacent
+				if (direction > 2) {
+					return;
+				}
+				else
+				{
+					// Set old cell to empty
+					boardArr[oldX][oldY] = ' ';
+					// Set new cell to the token color
+					boardArr[newX][newY] = tokenToMove;
+					// Attack
+				}
+			}
+
+			// Check if you can attack and how many tokens can be killed
+			else
+				System.out.println("You cannot move this token. >:(");
+		}
+		else
+			System.out.println("This cell is not empty!!!");
+		
+	}
+
 	/**
 	 * Method to verify if a cell is black or white
 	 * @param positionX  positionY
 	 * @return true if cell is black , false is cell is white
 	 */
 	public boolean blackCell(int positionX, int positionY) {
-		 	
-				if ((positionX%2==0) && (positionY%2==0)) return true;  //black cell
-				else if ((positionX%2!=0) && (positionY%2!=0)) return true;  //black cell
-				else  return false;   //white cell
+		if ((positionX%2==0) && (positionY%2==0))
+			return true;  //black cell
+		else if ((positionX%2!=0) && (positionY%2!=0))
+			return true;  //black cell
+		else
+			return false;   //white cell
 	}
 	/**
 	 * * Method to verify if a tile on a board is empty
 	 * @param row index
 	 * @param col index
 	 * @return true if empty, false otherwise
-	 
+
 	 */
-	public boolean isEmpty(int row, int col) {
-		return boardArr[row][col] == ' ';
+	public boolean isEmpty(int positionX, int positionY) {
+		return boardArr[positionX][positionY] == ' ';
 	}
-	
-	
-	
+
 	/**
 	 * Get the token at a certain position
 	 * @param pos
@@ -107,5 +136,8 @@ public class Board {
 		int xPos = x - 1;
 		return boardArr[yPos][xPos];
 	}
-
+	
+	public void attack(int xVector, int yVector, char token) {
+		
+	}
 }
