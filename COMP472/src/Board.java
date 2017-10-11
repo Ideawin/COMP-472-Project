@@ -41,7 +41,14 @@ public class Board {
 			}
 		}
 	}
-
+	
+	/**
+	 * Getter method for maxConsecutiveMoves
+	 * @return
+	 */
+	public int getMaxConsecutiveMoves() {
+		return this.maxConsecutiveMoves;
+	}
 
 	/**
 	 * Method to display contents of the board
@@ -149,93 +156,97 @@ public class Board {
 	public void attack(int positionY, int positionX, int xVector, int yVector, char token) {
 		int i = positionX;
 		int j = positionY;
+		int ctr = 0;
 		// Diagonal moves
 		if (xVector > 0 && yVector > 0) {
 			// Diagonal right-down
-			consecutiveAttack(++i, j++, token, 'X');
+			ctr = consecutiveAttack(++i, j++, token, 'X', 0);
 		} 
 		else if (xVector > 0 && yVector < 0) {
 			// Diagonal right-up
-			consecutiveAttack(++i, --j, token, 'E');
+			ctr = consecutiveAttack(++i, --j, token, 'E', 0);
 		}
 		else if (xVector < 0 && yVector > 0) {
 			// Diagonal left-down
-			consecutiveAttack(--i, ++j, token, 'Z');
+			ctr = consecutiveAttack(--i, ++j, token, 'Z', 0);
 		}
 		else if (xVector < 0 && yVector < 0) {
 			// Diagonal left-up
-			consecutiveAttack(--i, --j, token, 'Q');
+			ctr = consecutiveAttack(--i, --j, token, 'Q', 0);
 		}
 		
 		// Horizontal/Vertical
 		else if (xVector > 0 && yVector == 0) {
 			// Right
-			consecutiveAttack(++i, j, token, 'R');
+			ctr = consecutiveAttack(++i, j, token, 'R', 0);
 		}
 		else if (xVector < 0 && yVector == 0) {
 			// Left
-			consecutiveAttack(--i, j, token, 'L');
+			ctr = consecutiveAttack(--i, j, token, 'L', 0);
 		}
 		else if (xVector == 0 && yVector > 0) {
 			// Down
-			consecutiveAttack(i, ++j, token, 'D');
+			ctr = consecutiveAttack(i, ++j, token, 'D', 0);
 		}
 		else if (xVector == 0 && yVector < 0) {
 			// Up
-			consecutiveAttack(i, --j, token, 'U');
+			ctr = consecutiveAttack(i, --j, token, 'U', 0);
+		}
+		if (ctr == 0) {
+			maxConsecutiveMoves--;
 		}
 	}
 	
 	// Recursive method
-	public void consecutiveAttack(int i, int j, char token, char direction) {
+	public int consecutiveAttack(int i, int j, char token, char direction, int ctr) {
 		if (i < 0 || i >= WIDTH || j < 0 || j >= HEIGHT) {
-			return;
+			return ctr;
 		}
 		if (boardArr[j][i] == ' ') {
-			return;
+			return ctr;
 		}
 		if (boardArr[j][i] == token) {
-			return;
+			return ctr;
 		}
-		else if (direction == 'L') {
-			if (boardArr[j][i] != token) {
-				boardArr[j][i] = ' ';
-			}
-			consecutiveAttack(--i, j, token, direction);
+		if (direction == 'L') {
+			boardArr[j][i] = ' ';
+			return consecutiveAttack(--i, j, token, direction, ++ctr);
 		}
 		else if (direction == 'R') {
 			boardArr[j][i] = ' ';
-			consecutiveAttack(++i, j, token, direction);
+			return consecutiveAttack(++i, j, token, direction, ++ctr);
 			
 		}
 		else if (direction == 'D') {
 			boardArr[j][i] = ' ';
-			consecutiveAttack(i,++j, token, direction);
+			return consecutiveAttack(i,++j, token, direction, ++ctr);
 		}
 		else if (direction == 'U') {
 			boardArr[j][i] = ' ';
-			consecutiveAttack(i, --j, token, direction);
+			return consecutiveAttack(i, --j, token, direction, ++ctr);
 		}
 		// Diagonals
 		// Top-left
 		else if (direction == 'Q') {
 			boardArr[j][i] = ' ';
-			consecutiveAttack(--i, --j, token, direction);
+			return consecutiveAttack(--i, --j, token, direction, ++ctr);
 		}
 		// Top-right
 		else if (direction == 'E') {
 			boardArr[j][i] = ' ';
-			consecutiveAttack(++i, --j, token, direction);
+			return consecutiveAttack(++i, --j, token, direction, ++ctr);
 		}
 		// Down-left
 		else if (direction == 'Z') {
 			boardArr[j][i] = ' ';
-			consecutiveAttack(--i, ++j, token, direction);
+			return consecutiveAttack(--i, ++j, token, direction, ++ctr);
 		}
 		// Down-right
 		else if (direction == 'X') {
 			boardArr[j][i] = ' ';
-			consecutiveAttack(++i, ++j, token, direction);
+			return consecutiveAttack(++i, ++j, token, direction, ++ctr);
 		}
+		else
+			return ctr;
 	}
 }

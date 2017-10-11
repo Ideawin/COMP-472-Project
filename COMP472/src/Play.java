@@ -21,7 +21,7 @@ public class Play {
 		// GAME LOOP: 
 		// TODO: Find actual condition until the game is over
 		// TODO: The Board should return us with a boolean to say if the move was valid or not, if it's not valid, continue in the game loop
-		while(true) {
+		while(bonzeeBoard.getMaxConsecutiveMoves() > 0) {
 			System.out.print("It's ");
 			System.out.print(tokenG ? "Green's " : "Red's ");
 			System.out.println("turn.");
@@ -80,6 +80,8 @@ public class Play {
 			
 			// Switch turn
 			tokenG = !tokenG;
+			if (bonzeeBoard.getMaxConsecutiveMoves() > 0)
+				System.out.println("10 non-attacking consecutive moves have been made. The game is DRAW.");
 		}
 //		scanner.close();
 	}
