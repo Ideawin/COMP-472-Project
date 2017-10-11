@@ -3,16 +3,14 @@ public class Board {
 	final int WIDTH = 9;
 	final int HEIGHT = 5;
 	int maxConsecutiveMoves = 10;
-	//char[] boardArr;
-	String[][] boardArr;
-	
+	char[][] boardArr;
 		
 	/**
 	 * Constructor
 	 */
 	public Board() {
 		// Create a new board
-		boardArr = new String[HEIGHT][WIDTH];
+		boardArr = new char[HEIGHT][WIDTH];
 		
 		
 		//black and white positions
@@ -21,9 +19,9 @@ public class Board {
 		/*
 		for (int i = 0; i < HEIGHT; i++) {
 			for (int j = 0; j < WIDTH; j++) {
-				if ((i%2==0) && (j%2==0)) boardArr[i] [j] = "B";
-				else if ((i%2!=0) && (j%2!=0)) boardArr[i] [j] = "B";
-				else  boardArr[i] [j] = "W";
+				if ((i%2==0) && (j%2==0)) boardArr[i] [j] = 'B';
+				else if ((i%2!=0) && (j%2!=0)) boardArr[i] [j] = 'B';
+				else  boardArr[i] [j] = 'W';
 			}
 		} 
 	 */
@@ -34,14 +32,14 @@ public class Board {
 		for (int i = 0; i < HEIGHT; i++) {
 			for (int j = 0; j < WIDTH; j++) {
 				if (i == 0 || i == 1)
-					boardArr[i] [j] = "R";
+					boardArr[i] [j] = 'R';
 				else if (i == 3 || i == 4)
-					boardArr[i] [j] = "G";
+					boardArr[i] [j] = 'G';
 				else if (i == 2 && j < 4)
-					boardArr[i] [j] = "G";
+					boardArr[i] [j] = 'G';
 				else if (i == 2 && j > 4)
-					boardArr[i] [j] = "R";
-				else boardArr[i] [j] = " ";
+					boardArr[i] [j] = 'R';
+				else boardArr[i] [j] = ' ';
 			}
 		}
 	}
@@ -53,7 +51,7 @@ public class Board {
 	public void displayBoard() {
 		for (int i = 0; i < HEIGHT; i++) {
 			for (int j = 0; j < WIDTH; j++)  
-				System.out.print(boardArr[i] [j] + " "); // \t
+				System.out.print(boardArr[i][j] + " "); // \t
 			System.out.println();
 		}
 	}
@@ -96,31 +94,17 @@ public class Board {
 		return boardArr[pos] == ' ';
 	}*/
 	
-	/**
-	 * Method to get the position index of a tile on the board
-	 * @param y
-	 * @param x
-	 * @return
-	 */
 	
-	/*
-	public int getPositionIndex(char y, int x) {
-		int arrayNum = -1;
-		if (y >= 'A' && y <= 'E') {
-			arrayNum = ((y-'A')*WIDTH) + (x-1);
-		}
-		return arrayNum;
-	}
-	
-	*/
 	
 	/**
 	 * Get the token at a certain position
 	 * @param pos
 	 * @return
 	 */
-	/*public char getTokenAtPosition(int pos) {
-		return boardArr[pos];
-	}*/
+	public char getTokenAtPosition(char y, int x) {
+		int yPos = y - 'A';
+		int xPos = x - 1;
+		return boardArr[yPos][xPos];
+	}
 
 }
