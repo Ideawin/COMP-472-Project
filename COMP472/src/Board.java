@@ -3,7 +3,8 @@ import java.util.List;
 public class Board {
 	final int WIDTH = 9;
 	final int HEIGHT = 5;
-	int maxConsecutiveMoves = 10;
+	final int DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE = 10;
+	int maxConsecutiveMoves = DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE;
 	char[][] boardArr;
 
 	/**
@@ -237,6 +238,8 @@ public class Board {
 		}
 		if (ctr == 0) {
 			maxConsecutiveMoves--;
+		} else {
+			maxConsecutiveMoves = DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE;
 		}
 	}
 	
