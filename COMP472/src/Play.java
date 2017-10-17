@@ -7,6 +7,7 @@ public class Play {
 		bonzeeBoard = new Board();
 		bonzeeBoard.displayBoard();
 		startGame();
+		
 	}
 	
 	public static void startGame() {
@@ -69,8 +70,10 @@ public class Play {
 						// Call the game
 						if(initialX != -1 && finalX != -1) {
 							moved = bonzeeBoard.moveToken(initialY, initialX, finalY, finalX, tokenG ? 'G' : 'R');
-							if (moved)
+							if (moved){
 								bonzeeBoard.displayBoard();
+								if (isFinal()) break;
+							}
 							else
 								continue;
 						}
@@ -83,7 +86,25 @@ public class Play {
 			if (bonzeeBoard.getMaxConsecutiveMoves() == 0)
 				System.out.println("10 non-attacking consecutive moves have been made. The game is DRAW.");
 		}
+		
+		
+			
 //		scanner.close();
 	}
-
+	
+	public static boolean isFinal() {
+	// RESULT FINAL:
+			boolean isf = true;
+			//IF R TOKENS LEFT IS 0, THEN G WINS
+			if (bonzeeBoard.getnumR() == 0)  
+				System.out.println("The G  Won!!!!!!!!!!!");
+				else
+					//IF G TOKENS LEFT IS 0, THEN R WINSS
+					if (bonzeeBoard.getnumG() == 0)  
+						System.out.println("The R  Won!!!!!!!!!!!!");
+					else
+						isf = false;
+			return(isf);
+			
+	}
 }

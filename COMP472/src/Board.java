@@ -6,11 +6,26 @@ public class Board {
 	final int DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE = 10;
 	int maxConsecutiveMoves = DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE;
 	char[][] boardArr;
+	int numR;
+	int numG;
+	
+	public int getnumR()
+	{
+	     // Returns the numR  total token R remaining  
+		return numR;
+	}
+	public int getnumG()
+	{
+	     // Returns the numG total token G remaining   
+		return numG;
+	}
 
 	/**
 	 * Constructor
 	 */
 	public Board() {
+		numR = 22;
+		numG = 22;
 		// Create a new board
 		boardArr = new char[HEIGHT][WIDTH];
 
@@ -256,43 +271,59 @@ public class Board {
 		}
 		if (direction == 'L') {
 			boardArr[j][i] = ' ';
+			remainingTokens(token);
 			return consecutiveAttack(--i, j, token, direction, ++ctr);
 		}
 		else if (direction == 'R') {
 			boardArr[j][i] = ' ';
+			remainingTokens(token);
 			return consecutiveAttack(++i, j, token, direction, ++ctr);
 			
 		}
 		else if (direction == 'D') {
 			boardArr[j][i] = ' ';
+			remainingTokens(token);
 			return consecutiveAttack(i,++j, token, direction, ++ctr);
 		}
 		else if (direction == 'U') {
 			boardArr[j][i] = ' ';
+			remainingTokens(token);
 			return consecutiveAttack(i, --j, token, direction, ++ctr);
 		}
 		// Diagonals
 		// Top-left
 		else if (direction == 'Q') {
 			boardArr[j][i] = ' ';
+			remainingTokens(token);
 			return consecutiveAttack(--i, --j, token, direction, ++ctr);
 		}
 		// Top-right
 		else if (direction == 'E') {
 			boardArr[j][i] = ' ';
+			remainingTokens(token);
 			return consecutiveAttack(++i, --j, token, direction, ++ctr);
 		}
 		// Down-left
 		else if (direction == 'Z') {
 			boardArr[j][i] = ' ';
+			remainingTokens(token);
 			return consecutiveAttack(--i, ++j, token, direction, ++ctr);
 		}
 		// Down-right
 		else if (direction == 'X') {
 			boardArr[j][i] = ' ';
+			remainingTokens(token);
 			return consecutiveAttack(++i, ++j, token, direction, ++ctr);
 		}
 		else
 			return ctr;
+	}
+	
+	/**
+	 * Method to decrease the number of tokens
+	 */
+	public void remainingTokens(char token) {
+		if (token == 'R') --numG;
+		if (token == 'G') --numR;	
 	}
 }
