@@ -70,12 +70,17 @@ public class Board {
 	 * Method to display contents of the board
 	 */
 	public void displayBoard() {
-		System.out.println("\t1\t2\t3\t4\t5\t6\t7\t8\t9");
+		System.out.println("\t|   1\t|   2\t|   3\t|   4\t|   5\t|   6\t|   7\t|   8\t|   9\t|");
+		System.out.println("---------------------------------------------------------------------------------");
 		for (int i = 0; i < HEIGHT; i++) {
 			System.out.print(((char)(i + 'A')) + "\t");
 			for (int j = 0; j < WIDTH; j++)  
-				System.out.print(boardArr[i][j] + "\t"); // \t
-			System.out.println();
+				if(this.blackCell(j,  i)) 
+					System.out.print("|   " + boardArr[i][j] + "*\t"); // \t
+				else 
+					System.out.print("|   " + boardArr[i][j] + "\t"); // \t
+			System.out.println("|");
+			System.out.println("---------------------------------------------------------------------------------");
 		}
 	}
 
