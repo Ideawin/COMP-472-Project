@@ -118,7 +118,11 @@ public class Board {
 			}
 
 			else {
-				System.out.println("Invalid Move: Cannot move the opponent's token. Try again!!");
+				if (token == ' ') {
+					System.out.println("Invalid Move: There is no token to move at this position. Try again!!");
+				}
+				else
+					System.out.println("Invalid Move: Cannot move the opponent's token. Try again!!");
 				return false;
 			}
 		}
@@ -253,7 +257,7 @@ public class Board {
 			System.out.println("NUMBER OF CONSECUTIVE MOVES LEFT: " + maxConsecutiveMoves );
 		} else {
 			maxConsecutiveMoves = DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE;
-			System.out.println("Opponent has been attacked!! " + ctr + "token(s) were removed.");
+			System.out.println("Opponent has been attacked!! " + ctr + " token(s) were removed.");
 		}
 	}
 	
