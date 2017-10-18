@@ -102,11 +102,11 @@ public class Play {
 			boolean isf = true;
 			//IF R TOKENS LEFT IS 0, THEN G WINS
 			if (bonzeeBoard.getnumR() == 0)  
-				System.out.println("The G  Won!!!!!!!!!!!");
+				System.out.println("The G Won!!!!!!!!!!!");
 				else
 					//IF G TOKENS LEFT IS 0, THEN R WINSS
 					if (bonzeeBoard.getnumG() == 0)  
-						System.out.println("The R  Won!!!!!!!!!!!!");
+						System.out.println("The R Won!!!!!!!!!!!!");
 					else
 						isf = false;
 			return(isf);
