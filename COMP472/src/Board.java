@@ -29,18 +29,7 @@ public class Board {
 		// Create a new board
 		boardArr = new char[HEIGHT][WIDTH];
 
-		// Black and white positions
-
-		/*
-		for (int i = 0; i < HEIGHT; i++) {
-			for (int j = 0; j < WIDTH; j++) {
-				if ((i%2==0) && (j%2==0)) boardArr[i] [j] = 'B';
-				else if ((i%2!=0) && (j%2!=0)) boardArr[i] [j] = 'B';
-				else  boardArr[i] [j] = 'W';
-			}
-		} 
-		 */
-
+	
 		// Set tokens on the board
 
 		for (int i = 0; i < HEIGHT; i++) {
@@ -108,10 +97,12 @@ public class Board {
 				boolean isBlack = blackCell(oldXPos,oldYPos);
 				// If next move is not horizontal/vertical and is white
 				if (direction > 1 && !isBlack) {
+					System.out.println("Invalid Move: Cannot move diagonally on white case. Try Again!!");
 					return false;
 				}
 				// If next move is not adjacent
 				if (direction > 2) {
+					System.out.println("Invalid Move: The next position is not adjacent to the current token. Try Again!!");
 					return false;
 				}
 				else
@@ -127,12 +118,12 @@ public class Board {
 			}
 
 			else {
-				System.out.println("You cannot move the opponent's token. Try again.");
+				System.out.println("Invalid Move: Cannot move the opponent's token. Try again!!");
 				return false;
 			}
 		}
 		else {
-			System.out.println("Cannot move this token. Try again.");
+			System.out.println("Invalid Move: This position is already taken. Try again!!");
 			return false;
 		}
 		
@@ -258,8 +249,11 @@ public class Board {
 		}
 		if (ctr == 0) {
 			maxConsecutiveMoves--;
+			System.out.println("No attack has been made in this turn.");
+			System.out.println("NUMBER OF CONSECUTIVE MOVES LEFT: " + maxConsecutiveMoves );
 		} else {
 			maxConsecutiveMoves = DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE;
+			System.out.println("Opponent has been attacked!! " + ctr + "token(s) were removed.");
 		}
 	}
 	
