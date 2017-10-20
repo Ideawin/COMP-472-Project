@@ -1,22 +1,34 @@
-import java.util.List;
-
+/**
+ * Class that represents the game board
+ *
+ */
 public class Board {
+
 	final int WIDTH = 9;
 	final int HEIGHT = 5;
 	final int DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE = 10;
-	int maxConsecutiveMoves = DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE;
+	final int MAX_NUMBER_OF_TOKENS_PER_PLAYER = 22;
+
+	int maxConsecutiveMoves;
 	char[][] boardArr;
 	int numR;
 	int numG;
-	
+
+	/**
+	 * Method to get the number of RED tokens currently on the board
+	 * @return an integer representing the number of RED tokens
+	 */
 	public int getnumR()
 	{
-	     // Returns the numR  total token R remaining  
 		return numR;
 	}
+
+	/**
+	 * Method to get the number of GREEN tokens currently on the board
+	 * @return an integer representing the number of GREEN tokens
+	 */
 	public int getnumG()
-	{
-	     // Returns the numG total token G remaining   
+	{ 
 		return numG;
 	}
 
@@ -24,14 +36,18 @@ public class Board {
 	 * Constructor
 	 */
 	public Board() {
-		numR = 22;
-		numG = 22;
+
+		// Initialize number of tokens
+		numR = MAX_NUMBER_OF_TOKENS_PER_PLAYER;
+		numG = MAX_NUMBER_OF_TOKENS_PER_PLAYER;
+
+		// Initialize max number of consecutive moves for the game
+		maxConsecutiveMoves = DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE;
+
 		// Create a new board
 		boardArr = new char[HEIGHT][WIDTH];
 
-	
 		// Set tokens on the board
-
 		for (int i = 0; i < HEIGHT; i++) {
 			for (int j = 0; j < WIDTH; j++) {
 				if (i == 0 || i == 1)
@@ -46,10 +62,10 @@ public class Board {
 			}
 		}
 	}
-	
+
 	/**
 	 * Getter method for maxConsecutiveMoves
-	 * @return
+	 * @return an integer value representing the max number of consecutive moves
 	 */
 	public int getMaxConsecutiveMoves() {
 		return this.maxConsecutiveMoves;
@@ -80,7 +96,7 @@ public class Board {
 	 * @param token 'R' or 'G'
 	 */
 	public boolean moveToken(char oldY, int oldX, char newY, int newX, char tokenToMove) {
-	
+
 		// Convert positions into index
 		int oldYPos = oldY - 'A';
 		int oldXPos = oldX - 1;
@@ -95,9 +111,10 @@ public class Board {
 				int yVector =  newY - oldY;
 				int direction = Math.abs(xVector) + Math.abs(yVector);
 				boolean isBlack = blackCell(oldXPos,oldYPos);
+
 				// If next move is not horizontal/vertical and is white
 				if (direction > 1 && !isBlack) {
-					System.out.println("Invalid Move: Cannot move diagonally on white case. Try Again!!");
+					System.out.println("Invalid Move: Cannot move diagonally on white cases. Try Again!!");
 					return false;
 				}
 				// If next move is not adjacent
@@ -116,7 +133,6 @@ public class Board {
 					return true;
 				}
 			}
-
 			else {
 				if (token == ' ') {
 					System.out.println("Invalid Move: There is no token to move at this position. Try again!!");
@@ -130,7 +146,7 @@ public class Board {
 			System.out.println("Invalid Move: This position is already taken. Try again!!");
 			return false;
 		}
-		
+
 	}
 
 	/**
@@ -167,7 +183,7 @@ public class Board {
 		int xPos = x - 1;
 		return boardArr[yPos][xPos];
 	}
-	
+
 	/**
 	 * Method to perform an attack by checking the direction of the user's move.
 	 * A call to a recursive function is done to remove consecutive tokens.
@@ -181,9 +197,9 @@ public class Board {
 		int i = positionX;
 		int j = positionY;
 		int ctr = 0;
-		
+
 		// DIAGONAL MOVES
-		
+
 		if (xVector > 0 && yVector > 0) {
 			// Forward attack: Diagonal right-down
 			ctr = consecutiveAttack(i+1, j+1, token, 'X', 0);
@@ -216,9 +232,9 @@ public class Board {
 				ctr = consecutiveAttack(i+2, j+2, token, 'X', 0);
 			}
 		}
-		
+
 		// HORIZONTAL/VERTICAL MOVES
-		
+
 		else if (xVector > 0 && yVector == 0) {
 			// Forward attack: Right
 			ctr = consecutiveAttack(i+1, j, token, 'R', 0);
@@ -257,75 +273,95 @@ public class Board {
 			System.out.println("NUMBER OF CONSECUTIVE MOVES LEFT: " + maxConsecutiveMoves );
 		} else {
 			maxConsecutiveMoves = DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE;
-			System.out.println("Opponent has been attacked!! " + ctr + " token(s) were removed.");
+			System.out.println("Opponent has been attacked! " + ctr + " token(s) were removed.");
 		}
 	}
-	
-	// Recursive method
+
+	/**
+	 * Method to perform attack recursively on one token or more
+	 * @param i Y position
+	 * @param j X position
+	 * @param token current player's token color
+	 * @param direction
+	 * @param ctr
+	 * @return
+	 */
 	public int consecutiveAttack(int i, int j, char token, char direction, int ctr) {
+
+		// If recursion reaches outside board boundaries, return
 		if (i < 0 || i >= WIDTH || j < 0 || j >= HEIGHT) {
 			return ctr;
 		}
+		// If recursion reaches an empty case, return
 		if (boardArr[j][i] == ' ') {
 			return ctr;
 		}
+		// If recursion reaches one of the player's own token, return
 		if (boardArr[j][i] == token) {
 			return ctr;
 		}
+
+		// HORIZONTAL/VERTICAL MOVES
+		// Left
 		if (direction == 'L') {
 			boardArr[j][i] = ' ';
-			remainingTokens(token);
+			decrementTokenCount(token);
 			return consecutiveAttack(--i, j, token, direction, ++ctr);
 		}
+		// Right
 		else if (direction == 'R') {
 			boardArr[j][i] = ' ';
-			remainingTokens(token);
+			decrementTokenCount(token);
 			return consecutiveAttack(++i, j, token, direction, ++ctr);
-			
+
 		}
+		// Down
 		else if (direction == 'D') {
 			boardArr[j][i] = ' ';
-			remainingTokens(token);
+			decrementTokenCount(token);
 			return consecutiveAttack(i,++j, token, direction, ++ctr);
 		}
+		// Up
 		else if (direction == 'U') {
 			boardArr[j][i] = ' ';
-			remainingTokens(token);
+			decrementTokenCount(token);
 			return consecutiveAttack(i, --j, token, direction, ++ctr);
 		}
-		// Diagonals
+
+		// DIAGONAL MOVES
 		// Top-left
 		else if (direction == 'Q') {
 			boardArr[j][i] = ' ';
-			remainingTokens(token);
+			decrementTokenCount(token);
 			return consecutiveAttack(--i, --j, token, direction, ++ctr);
 		}
 		// Top-right
 		else if (direction == 'E') {
 			boardArr[j][i] = ' ';
-			remainingTokens(token);
+			decrementTokenCount(token);
 			return consecutiveAttack(++i, --j, token, direction, ++ctr);
 		}
 		// Down-left
 		else if (direction == 'Z') {
 			boardArr[j][i] = ' ';
-			remainingTokens(token);
+			decrementTokenCount(token);
 			return consecutiveAttack(--i, ++j, token, direction, ++ctr);
 		}
 		// Down-right
 		else if (direction == 'X') {
 			boardArr[j][i] = ' ';
-			remainingTokens(token);
+			decrementTokenCount(token);
 			return consecutiveAttack(++i, ++j, token, direction, ++ctr);
 		}
 		else
 			return ctr;
 	}
-	
+
 	/**
 	 * Method to decrease the number of tokens
+	 * @param token the current player's token
 	 */
-	public void remainingTokens(char token) {
+	public void decrementTokenCount(char token) {
 		if (token == 'R') --numG;
 		if (token == 'G') --numR;	
 	}
