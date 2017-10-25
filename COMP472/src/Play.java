@@ -73,6 +73,10 @@ public class Play {
 						try {
 							initialX = Integer.parseInt(tokenPositions[0].substring(1));
 							finalX = Integer.parseInt(tokenPositions[1].substring(1));
+							if(initialX < 1 || initialX > 9 || finalX < 1 || finalX > 9) {
+								System.out.println("The X-position is wrong, it should be between 1 and 9.");
+								continue;
+							}
 						} catch (Exception e) {
 							System.out.println(e.getMessage());
 							System.out.println("The X-position should be a digit.");

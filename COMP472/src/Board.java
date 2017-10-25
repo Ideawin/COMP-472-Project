@@ -118,7 +118,7 @@ public class Board {
 					return false;
 				}
 				// If next move is not adjacent
-				if (direction > 2) {
+				if (Math.abs(xVector) > 1 || Math.abs(yVector) > 1) {
 					System.out.println("Invalid Move: The next position is not adjacent to the current token. Try Again!!");
 					return false;
 				}
