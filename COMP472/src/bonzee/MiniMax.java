@@ -1,3 +1,4 @@
+package bonzee;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,13 +91,29 @@ public class MiniMax {
 		return list;
 	}
 
-	/**
-	 * Method to calculate score of a node
-	 * @param node one of the child node
-	 */
-	public void calculateScore(Node node) {
-		// TO-DO: Use the heuristics and then do node.setScore();
-	}
+    /**
+     * Method to calculate score of a node
+     * @param node one of the child node
+     */
+    public void calculateScore(Node node) {
+    	// Start the score at 0
+    	int score = 0;
+    	
+    	// Look for all G/R tokens through the board
+    	for(int i = 0; i < node.currentState.length; i++) {
+    		for(int j = 0; j < node.currentState[i].length; j++ ) {
+    			if(node.currentState[i][j] == 'G') {
+    				// If green, update the score to be 100 * horizontalIndex + 50 * verticalIndex
+    				score += (100 * (i + 1)) + (50 * (j + 1));
+    			} else if (node.currentState[i][j] == 'R') {
+    				// If red, update the score to be -100 * horizontalIndex + -50 * verticalIndex
+    				score -= (100 * (i + 1)) + (50 * (j + 1));
+    			}
+    		}
+    	}
+    	node.setScore(score);
+    }
+    
 
 	/**
 	 * Method to find the best next move
@@ -122,5 +139,6 @@ public class MiniMax {
 		}
 		return null;
 	}
-
 }
+
+    

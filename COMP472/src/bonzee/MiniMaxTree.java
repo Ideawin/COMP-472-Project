@@ -1,3 +1,4 @@
+package bonzee;
 public class MiniMaxTree {
     Node root; // The root, which should be the AI's turn
     

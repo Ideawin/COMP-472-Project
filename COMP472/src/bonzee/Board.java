@@ -1,11 +1,12 @@
+package bonzee;
 /**
  * Class that represents the game board
  *
  */
 public class Board {
 
-	final int WIDTH = 9;
-	final int HEIGHT = 5;
+	public static final int WIDTH = 9;
+	public static final int HEIGHT = 5;
 	final int DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE = 10;
 	final int MAX_NUMBER_OF_TOKENS_PER_PLAYER = 22;
 
