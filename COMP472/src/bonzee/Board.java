@@ -14,6 +14,21 @@ public class Board {
 	char[][] boardArr;
 	int numR;
 	int numG;
+	
+	/**
+	 * Get the height
+	 */
+	public int getHeight() {
+		return HEIGHT;
+	}
+	
+	/**
+	 * Get the width
+	 * @return
+	 */
+	public int getWidth() {
+		return WIDTH;
+	}
 
 	/**
 	 * Set the boardArr
@@ -111,20 +126,14 @@ public class Board {
 	 * @param token 'R' or 'G'
 	 * @param checkValidityForMinMax True if it is used in MiniMax to check if a move is valid
 	 * */
-	public boolean moveToken(char oldY, int oldX, char newY, int newX, char tokenToMove, boolean checkValidityForMinMax) {
-
-		// Convert positions into index
-		int oldYPos = oldY - 'A';
-		int oldXPos = oldX - 1;
-		int newYPos = newY - 'A';
-		int newXPos = newX - 1;
+	public boolean moveToken(int oldYPos, int oldXPos, int newYPos, int newXPos, char tokenToMove, boolean checkValidityForMinMax) {
 
 		if (isEmpty(newXPos, newYPos)) {
-			// Check if it's your turn
-			char token = getTokenAtPosition(oldY,oldX);
+
+			char token = getTokenAtPosition(oldYPos,oldXPos);
 			if (token == tokenToMove) {
-				int xVector = newX - oldX;
-				int yVector =  newY - oldY;
+				int xVector = newXPos - oldXPos;
+				int yVector =  newYPos - oldYPos;
 				int direction = Math.abs(xVector) + Math.abs(yVector);
 				boolean isBlack = blackCell(oldXPos,oldYPos);
 
@@ -196,10 +205,8 @@ public class Board {
 	 * @param pos
 	 * @return
 	 */
-	public char getTokenAtPosition(char y, int x) {
-		int yPos = y - 'A';
-		int xPos = x - 1;
-		return boardArr[yPos][xPos];
+	public char getTokenAtPosition(int y, int x) {
+		return boardArr[y][x];
 	}
 
 	/**

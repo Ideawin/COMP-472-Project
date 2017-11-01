@@ -86,7 +86,12 @@ public class Play {
 
 						// Call the game
 						if(initialX != -1 && finalX != -1) {
-							moved = bonzeeBoard.moveToken(initialY, initialX, finalY, finalX, tokenG ? 'G' : 'R',false);
+							// Convert positions into index
+							int oldYPos = initialY - 'A';
+							int oldXPos = initialX - 1;
+							int newYPos = finalY - 'A';
+							int newXPos = finalX - 1;
+							moved = bonzeeBoard.moveToken(oldYPos, oldXPos, newYPos, newXPos, tokenG ? 'G' : 'R',false);
 							if (moved){
 								bonzeeBoard.displayBoard();
 								if (isFinal()) break;
