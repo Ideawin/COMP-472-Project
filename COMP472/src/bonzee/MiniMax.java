@@ -81,7 +81,6 @@ public class MiniMax {
 		// TO-DO: Make a list of all possible next moves, each move being a String ex. "A1,B1"
 		// Maybe make use of attribute currentBoardState?
 		List<String> list = new ArrayList<>();
-		String move = "";
 		
 		miniMaxBoard.setBoardArr(parentNode.getCurrentState());
 		Boolean isMAXPlayer = parentNode.isMAX();
@@ -90,143 +89,102 @@ public class MiniMax {
 			for (int j = 0; j < miniMaxBoard.getWidth(); j++) {
 				if (i == 0 && j == 0) {
 					isValid = miniMaxBoard.moveToken(i, j, i, j+1, isMAXPlayer ? 'G' : 'R',true); // right
-					if (isValid) move = i + "" + j + "," + i + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i+1, j+1, isMAXPlayer ? 'G' : 'R',true); // diagonal  down-right
-					if (isValid) move = i + "" + j + "," + i+1 + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i+1, j, isMAXPlayer ? 'G' : 'R',true); // down
-					if (isValid) move = i + "" + j + "," + i+1 + "" + j;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + j);
 				}
 				else if (i == 0 && j == 7) {
 					isValid = miniMaxBoard.moveToken(i, j, i, j+1, isMAXPlayer ? 'G' : 'R',true); // left
-					if (isValid) move = i + "" + j + "," + i + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i+1, j-1, isMAXPlayer ? 'G' : 'R',true); // diagonal down-left
-					if (isValid) move = i + "" + j + "," + i+1 + "" + (j-1);
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + (j-1));
 					isValid = miniMaxBoard.moveToken(i, j, i+1, j, isMAXPlayer ? 'G' : 'R',true); // down
-					if (isValid) move = i + "" + j + "," + i+1 + "" + j;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + j);
 				}
 				else if (i == 4 && j == 0 ) {
 					isValid = miniMaxBoard.moveToken(i, j, i, j+1, isMAXPlayer ? 'G' : 'R',true); // right
-					if (isValid) move = i + "" + j + "," + i + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i-1, j+1, isMAXPlayer ? 'G' : 'R',true); // diagonal up-right
-					if (isValid) move = i + "" + j + "," + (i-1) + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + (i-1) + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i-1, j, isMAXPlayer ? 'G' : 'R',true); // up
-					if (isValid) move = i + "" + j + "," + (i-1) + "" + j;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + (i-1) + "" + j);
 				}
 				else if (i == 4 && j == 7) {
 					isValid = miniMaxBoard.moveToken(i, j, i-1, j, isMAXPlayer ? 'G' : 'R',true); // left
-					if (isValid) move = i + "" + j + "," + i + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i-1, j-1, isMAXPlayer ? 'G' : 'R',true); // diagonal up-left
-					if (isValid) move = i + "" + j + "," + i+1 + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i-1, j, isMAXPlayer ? 'G' : 'R',true); // up
-					if (isValid) move = i + "" + j + "," + (i-1) + "" + j;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + (i-1) + "" + j);
 				}
 				else if (i == 0) {
 					isValid = miniMaxBoard.moveToken(i, j, i, j+1, isMAXPlayer ? 'G' : 'R',true); // right
-					if (isValid) move = i + "" + j + "," + i + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i, j+1, isMAXPlayer ? 'G' : 'R',true); // left
-					if (isValid) move = i + "" + j + "," + i + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i+1, j, isMAXPlayer ? 'G' : 'R',true); // down
-					if (isValid) move = i + "" + j + "," + i+1 + "" + j;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + j);
 					isValid = miniMaxBoard.moveToken(i, j, i+1, j+1, isMAXPlayer ? 'G' : 'R',true); // diagonal down-right
-					if (isValid) move = i + "" + j + "," + i+1 + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i+1, j-1, isMAXPlayer ? 'G' : 'R',true); // diagonal down-left
-					if (isValid) move = i + "" + j + "," + i+1 + "" + (j-1);
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + (j-1));
 				}
 				else if (i == 4) {
 					isValid = miniMaxBoard.moveToken(i, j, i-1, j, isMAXPlayer ? 'G' : 'R',true); // up
-					if (isValid) move = i + "" + j + "," + (i-1) + "" + j;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + (i-1) + "" + j);
 					isValid = miniMaxBoard.moveToken(i, j, i, j+1, isMAXPlayer ? 'G' : 'R',true); // right
-					if (isValid) move = i + "" + j + "," + i + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i, j+1, isMAXPlayer ? 'G' : 'R',true); // left
-					if (isValid) move = i + "" + j + "," + i + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i-1, j+1, isMAXPlayer ? 'G' : 'R',true); // diagonal up-right
-					if (isValid) move = i + "" + j + "," + (i-1) + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + (i-1) + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i-1, j-1, isMAXPlayer ? 'G' : 'R',true); // diagonal up-left
-					if (isValid) move = i + "" + j + "," + i+1 + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + j+1);
 				}
 				else if (j == 0) {
 					isValid = miniMaxBoard.moveToken(i, j, i-1, j, isMAXPlayer ? 'G' : 'R',true); // up
-					if (isValid) move = i + "" + j + "," + (i-1) + "" + j;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + (i-1) + "" + j);
 					isValid = miniMaxBoard.moveToken(i, j, i, j+1, isMAXPlayer ? 'G' : 'R',true); // right
-					if (isValid) move = i + "" + j + "," + i + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i+1, j, isMAXPlayer ? 'G' : 'R',true); // down
-					if (isValid) move = i + "" + j + "," + i+1 + "" + j;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + j);
 					isValid = miniMaxBoard.moveToken(i, j, i-1, j+1, isMAXPlayer ? 'G' : 'R',true); // diagonal up-right
-					if (isValid) move = i + "" + j + "," + i+1 + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i+1, j+1, isMAXPlayer ? 'G' : 'R',true); // diagonal down-right
-					if (isValid) move = i + "" + j + "," + i+1 + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + j+1);
 				}
 				else if (j == 7) {
 					isValid = miniMaxBoard.moveToken(i, j, i-1, j, isMAXPlayer ? 'G' : 'R',true); // up
-					if (isValid) move = i + "" + j + "," + (i-1) + "" + j;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + (i-1) + "" + j);
 					isValid = miniMaxBoard.moveToken(i, j, i+1, j, isMAXPlayer ? 'G' : 'R',true); // down
-					if (isValid) move = i + "" + j + "," + i+1 + "" + j;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + j);
 					isValid = miniMaxBoard.moveToken(i, j, i, j+1, isMAXPlayer ? 'G' : 'R',true); // left
-					if (isValid) move = i + "" + j + "," + i + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i-1, j-1, isMAXPlayer ? 'G' : 'R',true); // diagonal up-left
-					if (isValid) move = i + "" + j + "," + i+1 + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i+1, j-1, isMAXPlayer ? 'G' : 'R',true); // diagonal down-left
-					if (isValid) move = i + "" + j + "," + i+1 + "" + (j-1);
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + (j-1));
 				}
 				else {
 					isValid = miniMaxBoard.moveToken(i, j, i-1, j, isMAXPlayer ? 'G' : 'R',true); // up
-					if (isValid) move = i + "" + j + "," + (i-1) + "" + j;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + (i-1) + "" + j);
 					isValid = miniMaxBoard.moveToken(i, j, i+1, j, isMAXPlayer ? 'G' : 'R',true); // down
-					if (isValid) move = i + "" + j + "," + i+1 + "" + j;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + j);
 					isValid = miniMaxBoard.moveToken(i, j, i, j+1, isMAXPlayer ? 'G' : 'R',true); // left
-					if (isValid) move = i + "" + j + "," + i + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i, j+1, isMAXPlayer ? 'G' : 'R',true); // right
-					if (isValid) move = i + "" + j + "," + i + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i-1, j-1, isMAXPlayer ? 'G' : 'R',true); // diagonal up-left
-					if (isValid) move = i + "" + j + "," + i+1 + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i+1, j-1, isMAXPlayer ? 'G' : 'R',true); // diagonal down-left
-					if (isValid) move = i + "" + j + "," + i+1 + "" + (j-1);
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + (j-1));
 					isValid = miniMaxBoard.moveToken(i, j, i-1, j+1, isMAXPlayer ? 'G' : 'R',true); // diagonal up-right
-					if (isValid) move = i + "" + j + "," + i+1 + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + j+1);
 					isValid = miniMaxBoard.moveToken(i, j, i+1, j+1, isMAXPlayer ? 'G' : 'R',true); // diagonal down-right
-					if (isValid) move = i + "" + j + "," + i+1 + "" + j+1;
-					list.add(move);
+					if (isValid) list.add(i + "" + j + "," + i+1 + "" + j+1);
 				}
-
 			}
 		}
 		return list;
