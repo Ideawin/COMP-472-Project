@@ -3,12 +3,14 @@ import java.util.List;
 public class MiniMax {
     MiniMaxTree tree;
     char[][] currentBoardState;
+    int maxLevelLookout;
  
     /**
      * First method to call when it is the AI player's turn
      * @param maxLevelLookout
      */
     public void makeTree(int maxLevelLookout, boolean isMAX, char[][] currentBoardState) {
+    	this.maxLevelLookout = maxLevelLookout;
     	this.currentBoardState = currentBoardState;
         tree = new MiniMaxTree();
         Node root = new Node(isMAX, maxLevelLookout, "");
@@ -61,7 +63,7 @@ public class MiniMax {
         		evaluateChildren(child); // Recursive call
         }
         
-        Node bestNode = findBestNode(isMAXPlayer, children); // Find the best move among the children
+        Node bestNode = findBestNode(isMAXPlayer, children, this.maxLevelLookout - node.getMaxLevelLookout()); // Find the best move among the children
         node.setScore(bestNode.getScore());
     }
     
@@ -89,18 +91,23 @@ public class MiniMax {
      * @param children
      * @return the best node
      */
-    public Node findBestNode(boolean isMAX, List<Node> children) {
+    public Node findBestNode(boolean isMAX, List<Node> children, int currentLevel) {
     	// TO-DO: iterate through children and select the appropriate node
     	if (isMAX) {
+    		System.out.print("MAX Level : " + currentLevel + " ");
     		for (Node n : children) {
-    			// Find the HIGHEST score using n.getScore() and compare somehow
+    			// Display the scores first
+    			System.out.print(n.getScore() + " ");
+    			// Find the HIGHEST score using n.getScore() and compare somehow (perhaps by doing int highestScore = n.getScore(); and compare?)
     		}
     	}
     	else {
+    		System.out.print("MIN Level : " + currentLevel + " ");
     		for (Node n : children) {
     			// Find the LOWEST score using n.getScore() and compare somehow
     		}
     	}
     	return null;
     }
+    
 }
