@@ -24,7 +24,7 @@ public class MiniMax {
      */
     public void makeTree(Node parentNode) {
         boolean isMAXPlayer = !parentNode.isMAX(); // Used to set whether the child will be MAX/MIN
-        List<String> nextMoves = computeNextMoves(); // Get the next possible moves
+        List<String> nextMoves = computeNextMoves(parentNode); // Get the next possible moves
         
         // Iterate through each possible moves and create a node for each, adding them as children to the parent node
         // If maxLevelLookout hasn't reached 0, then the tree can have an additional level
