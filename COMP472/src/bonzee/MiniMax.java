@@ -220,13 +220,18 @@ public class MiniMax {
 	 * @return the best node
 	 */
 	public Node findBestNode(boolean isMAX, List<Node> children, int currentLevel) {
-		// TO-DO: iterate through children and select the appropriate node
+		int highestScore = 0;// TO-DO: iterate through children and select the appropriate node
 		if (isMAX) {
 			System.out.print("MAX Level : " + currentLevel + " ");
 			for (Node n : children) {
 				// Display the scores first
+				evaluateChildren(n);
 				System.out.print(n.getScore() + " ");
 				// Find the HIGHEST score using n.getScore() and compare somehow (perhaps by doing int highestScore = n.getScore(); and compare?)
+				if(n.getScore() > highestScore)
+				{
+					n.setScore(highestScore);
+				}
 			}
 		}
 		else {
