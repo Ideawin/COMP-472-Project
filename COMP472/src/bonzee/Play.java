@@ -86,7 +86,7 @@ public class Play {
 
 						// Call the game
 						if(initialX != -1 && finalX != -1) {
-							moved = bonzeeBoard.moveToken(initialY, initialX, finalY, finalX, tokenG ? 'G' : 'R');
+							moved = bonzeeBoard.moveToken(initialY, initialX, finalY, finalX, tokenG ? 'G' : 'R',false);
 							if (moved){
 								bonzeeBoard.displayBoard();
 								if (isFinal()) break;

@@ -109,8 +109,9 @@ public class Board {
 	 * @param x
 	 * @param y
 	 * @param token 'R' or 'G'
-	 */
-	public boolean moveToken(char oldY, int oldX, char newY, int newX, char tokenToMove) {
+	 * @param checkValidityForMinMax True if it is used in MiniMax to check if a move is valid
+	 * */
+	public boolean moveToken(char oldY, int oldX, char newY, int newX, char tokenToMove, boolean checkValidityForMinMax) {
 
 		// Convert positions into index
 		int oldYPos = oldY - 'A';
@@ -139,12 +140,14 @@ public class Board {
 				}
 				else
 				{
-					// Set old cell to empty
-					boardArr[oldYPos][oldXPos] = ' ';
-					// Set new cell to the token color
-					boardArr[newYPos][newXPos] = tokenToMove;
-					// Attack
-					attack(newYPos,newXPos,xVector,yVector,token);
+					if (!checkValidityForMinMax) {
+						// Set old cell to empty
+						boardArr[oldYPos][oldXPos] = ' ';
+						// Set new cell to the token color
+						boardArr[newYPos][newXPos] = tokenToMove;
+						// Attack
+						attack(newYPos,newXPos,xVector,yVector,token);
+					}
 					return true;
 				}
 			}
