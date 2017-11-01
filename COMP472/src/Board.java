@@ -15,6 +15,20 @@ public class Board {
 	int numG;
 
 	/**
+	 * Set the boardArr
+	 */
+	public void setBoardArr(char[][] boardArr) {
+		this.boardArr = boardArr;
+	}
+	
+	/**
+	 * Get the boardArr
+	 */
+	public char[][] getBoardArr() {
+		return boardArr;
+	}
+	
+	/**
 	 * Method to get the number of RED tokens currently on the board
 	 * @return an integer representing the number of RED tokens
 	 */

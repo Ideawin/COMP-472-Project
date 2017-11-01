@@ -2,8 +2,8 @@ import java.util.List;
 
 public class MiniMax {
     MiniMaxTree tree;
-    char[][] currentBoardState;
     int maxLevelLookout;
+    Board miniMaxBoard;
  
     /**
      * First method to call when it is the AI player's turn
@@ -11,9 +11,9 @@ public class MiniMax {
      */
     public void makeTree(int maxLevelLookout, boolean isMAX, char[][] currentBoardState) {
     	this.maxLevelLookout = maxLevelLookout;
-    	this.currentBoardState = currentBoardState;
         tree = new MiniMaxTree();
         Node root = new Node(isMAX, maxLevelLookout, "");
+        root.setCurrentState(currentBoardState);
         tree.setRoot(root);
         makeTree(root);
     }
@@ -29,7 +29,11 @@ public class MiniMax {
         // Iterate through each possible moves and create a node for each, adding them as children to the parent node
         // If maxLevelLookout hasn't reached 0, then the tree can have an additional level
         for (String move : nextMoves) {
+        	miniMaxBoard.setBoardArr(parentNode.getCurrentState());
+        	miniMaxBoard.moveToken(move.charAt(0), move.charAt(1), move.charAt(3), move.charAt(4), parentNode.isMAX() ? 'G' : 'R');
+        	
         	Node newNode = new Node(isMAXPlayer, parentNode.getMaxLevelLookout() - 1, move);
+        	newNode.setCurrentState(miniMaxBoard.getBoardArr());
         	parentNode.addChild(newNode);
         	if (newNode.getMaxLevelLookout() > 0) {
         		makeTree(newNode); // Recursive call for next level
@@ -71,7 +75,7 @@ public class MiniMax {
      * Method to create a list of possible next moves as strings ex. "A1,B1" implies moving A1 to B1
      * @return List of String values
      */
-    public List<String> computeNextMoves() {
+    public List<String> computeNextMoves(Node parentNode) {
     	// TO-DO: Make a list of all possible next moves, each move being a String ex. "A1,B1"
     	// Maybe make use of attribute currentBoardState?
     	return null;

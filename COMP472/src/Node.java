@@ -7,6 +7,7 @@ public class Node {
     int score;
     String tokenMove;
     List<Node> children;
+    char[][] currentState;
     
     /**
      * Constructor
@@ -47,4 +48,19 @@ public class Node {
     public void setScore(int score) {
     	this.score = score;
     }
+    
+	/**
+	 * Set the current state
+	 */
+	public void setCurrentState(char[][] currentState) {
+		this.currentState = currentState;
+	}
+	
+	/**
+	 * Get the current state
+	 */
+	public char[][] getCurrentState() {
+		return currentState;
+	}
+	
 }
