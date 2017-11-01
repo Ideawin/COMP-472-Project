@@ -1,3 +1,4 @@
+package bonzee;
 /**
  * Class that represents the game board
  *

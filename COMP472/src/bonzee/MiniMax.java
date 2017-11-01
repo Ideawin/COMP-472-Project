@@ -1,3 +1,4 @@
+package bonzee;
 import java.util.List;
 
 public class MiniMax {
