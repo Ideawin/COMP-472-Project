@@ -2,10 +2,16 @@ import java.util.List;
 
 public class MiniMax {
     MiniMaxTree tree;
+    char[][] currentBoardState;
  
-    public void makeTree(int maxLevelLookout) {
+    /**
+     * First method to call when it is the AI player's turn
+     * @param maxLevelLookout
+     */
+    public void makeTree(int maxLevelLookout, boolean isMAX, char[][] currentBoardState) {
+    	this.currentBoardState = currentBoardState;
         tree = new MiniMaxTree();
-        Node root = new Node(true, maxLevelLookout, "");
+        Node root = new Node(isMAX, maxLevelLookout, "");
         tree.setRoot(root);
         makeTree(root);
     }
@@ -65,6 +71,7 @@ public class MiniMax {
      */
     public List<String> computeNextMoves() {
     	// TO-DO: Make a list of all possible next moves, each move being a String ex. "A1,B1"
+    	// Maybe make use of attribute currentBoardState?
     	return null;
     }
     
@@ -80,7 +87,7 @@ public class MiniMax {
      * Method to find the best next move
      * @param isMAXPlayer a Boolean indicating whether the PARENT node is MIN or MAX
      * @param children
-     * @return
+     * @return the best node
      */
     public Node findBestNode(boolean isMAX, List<Node> children) {
     	// TO-DO: iterate through children and select the appropriate node
