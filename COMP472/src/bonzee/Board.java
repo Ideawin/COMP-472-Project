@@ -416,8 +416,6 @@ public class Board {
 		MiniMax miniMax = new MiniMax();
 		miniMax.makeTree(MINIMAX_MAX_LEVEL_LOOKUP, isGreen, boardArr);
 		String nextBestMove = miniMax.evaluateChildrenAndGetNextMove();
-		System.out.println("Next Best move: " + nextBestMove);
-		// A1,B1
 		this.moveToken(nextBestMove.charAt(0) - 'A', 
 						nextBestMove.charAt(1) - '0' - 1, 
 						nextBestMove.charAt(3) - 'A', 
