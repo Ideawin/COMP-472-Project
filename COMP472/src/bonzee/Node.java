@@ -10,6 +10,7 @@ public class Node {
     String tokenMove;
     List<Node> children;
     char[][] currentState;
+    String nextBestMove;
     
     /**
      * Constructor
@@ -67,4 +68,25 @@ public class Node {
 		return currentState;
 	}
 	
+	/**
+	 * Set next best move
+	 */
+	public void setNextBestMove(String move) {
+		this.nextBestMove = move;
+	}
+	
+	/**
+	 * Get next best move
+	 */
+	public String getNextBestMove() {
+		return nextBestMove;
+	}
+	
+	/**
+	 * Get token move
+	 * @return
+	 */
+	public String getTokenMove() {
+		return tokenMove;
+	}
 }

@@ -55,10 +55,11 @@ public class MiniMax {
 	/**
 	 * Method to evaluate children starting at the root
 	 */
-	public void evaluateChildren() {
+	public String evaluateChildrenAndGetNextMove() {
 		Node root = tree.getRoot();
 		evaluateChildren(root);
 		// MUST DISPLAY THE TREE HERE TO SHOW SCORES PROPAGATING UP!
+		return root.getNextBestMove();
 	}
 
 	/**
@@ -80,6 +81,7 @@ public class MiniMax {
 
 		Node bestNode = findBestNode(isMAXPlayer, children, this.maxLevelLookout - node.getMaxLevelLookout()); // Find the best move among the children
 		node.setScore(bestNode.getScore());
+		node.setNextBestMove(bestNode.getTokenMove());
 	}
 
 	/**
