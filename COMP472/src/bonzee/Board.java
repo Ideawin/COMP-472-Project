@@ -35,7 +35,13 @@ public class Board {
 	 * Set the boardArr
 	 */
 	public void setBoardArr(char[][] boardArr) {
-		this.boardArr = boardArr;
+		char[][] board = new char[HEIGHT][WIDTH];
+		for (int i = 0; i < HEIGHT; i++) {
+			for (int j = 0; j < WIDTH; j++) {
+				board[i][j] = boardArr[i][j];
+			}
+		}
+		this.boardArr = board;
 	}
 	
 	/**

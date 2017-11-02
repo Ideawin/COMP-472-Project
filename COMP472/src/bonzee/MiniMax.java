@@ -38,7 +38,11 @@ public class MiniMax {
 		
 		// Iterate through each possible moves and create a node for each, adding them as children to the parent node
 		// If maxLevelLookout hasn't reached 0, then the tree can have an additional level
+		for (String s : nextMoves) {
+			System.out.println(s);
+		}
 		for (String move : nextMoves) {
+			System.out.println("trying" + move);
 			miniMaxBoard.setBoardArr(parentNode.getCurrentState());
 			// moves are in "C4,C5" format, need for conversion from letter to int, and from char to int
 			int oldYPos = move.charAt(0) - 'A';
