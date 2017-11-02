@@ -27,7 +27,7 @@ public class Play {
 		// -----------------------------------------------------------------------
 		// Ask the user for the game mode (AI or Player)
 		// -----------------------------------------------------------------------
-		System.out.println("Do you want to play against another player or against an AI? (P for player, A for AI)");
+		System.out.println("Do you want to play against another player or against an AI? ('P' for player, 'AI' for AI)");
 		String playAgainstAIString = "";
 		do {
 			playAgainstAIString = scanner.nextLine();
