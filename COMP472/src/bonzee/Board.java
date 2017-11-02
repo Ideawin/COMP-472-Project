@@ -130,7 +130,6 @@ public class Board {
 	public boolean moveToken(int oldYPos, int oldXPos, int newYPos, int newXPos, char tokenToMove, boolean checkValidityForMinMax) {
 
 		if (isEmpty(newXPos, newYPos)) {
-
 			char token = getTokenAtPosition(oldYPos,oldXPos);
 			if (token == tokenToMove) {
 				int xVector = newXPos - oldXPos;
@@ -140,12 +139,16 @@ public class Board {
 
 				// If next move is not horizontal/vertical and is white
 				if (direction > 1 && !isBlack) {
-					System.out.println("Invalid Move: Cannot move diagonally on white cases. Try Again!!");
+					if (!checkValidityForMinMax) {
+						System.out.println("Invalid Move: Cannot move diagonally on white cases. Try Again!!");
+					}
 					return false;
 				}
 				// If next move is not adjacent
 				if (Math.abs(xVector) > 1 || Math.abs(yVector) > 1) {
-					System.out.println("Invalid Move: The next position is not adjacent to the current token. Try Again!!");
+					if (!checkValidityForMinMax) {
+						System.out.println("Invalid Move: The next position is not adjacent to the current token. Try Again!!");
+					}
 					return false;
 				}
 				else
@@ -162,16 +165,20 @@ public class Board {
 				}
 			}
 			else {
-				if (token == ' ') {
-					System.out.println("Invalid Move: There is no token to move at this position. Try again!!");
+				if (!checkValidityForMinMax) {
+					if (token == ' ') {
+						System.out.println("Invalid Move: There is no token to move at this position. Try again!!");
+					}
+					else
+						System.out.println("Invalid Move: Cannot move the opponent's token. Try again!!");
 				}
-				else
-					System.out.println("Invalid Move: Cannot move the opponent's token. Try again!!");
 				return false;
 			}
 		}
 		else {
-			System.out.println("Invalid Move: This position is already taken. Try again!!");
+			if (!checkValidityForMinMax) {
+				System.out.println("Invalid Move: This case is not empty. Try again!!");
+			}
 			return false;
 		}
 
