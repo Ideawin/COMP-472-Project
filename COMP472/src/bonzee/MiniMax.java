@@ -40,7 +40,8 @@ public class MiniMax {
 		// If maxLevelLookout hasn't reached 0, then the tree can have an additional level
 		for (String move : nextMoves) {
 			miniMaxBoard.setBoardArr(parentNode.getCurrentState());
-			miniMaxBoard.moveToken(move.charAt(0), move.charAt(1), move.charAt(3), move.charAt(4), parentNode.isMAX() ? 'G' : 'R',false);
+			// moves are in "C4,C5" format, need for conversion from letter to int, and from char to int
+			miniMaxBoard.moveToken(move.charAt(0) - 'A', move.charAt(1) - '0', move.charAt(3) - 'A', move.charAt(4) - '0', parentNode.isMAX() ? 'G' : 'R',false);
 
 			Node newNode = new Node(isMAXPlayer, parentNode.getMaxLevelLookout() - 1, move);
 			newNode.setCurrentState(miniMaxBoard.getBoardArr());
