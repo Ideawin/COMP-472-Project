@@ -58,7 +58,13 @@ public class Node {
 	 * Set the current state
 	 */
 	public void setCurrentState(char[][] currentState) {
-		this.currentState = currentState;
+		char[][] board = new char[5][9];
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 9; j++) {
+				board[i][j] = currentState[i][j];
+			}
+		}
+		this.currentState = board;
 	}
 	
 	/**

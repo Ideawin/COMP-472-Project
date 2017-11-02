@@ -42,16 +42,21 @@ public class MiniMax {
 			System.out.println(s);
 		}
 		for (String move : nextMoves) {
-			System.out.println("trying" + move);
+			System.out.println("Trying " + move);
 			miniMaxBoard.setBoardArr(parentNode.getCurrentState());
+			System.out.println("Before: ");
+			miniMaxBoard.displayBoard();
 			// moves are in "C4,C5" format, need for conversion from letter to int, and from char to int
 			int oldYPos = move.charAt(0) - 'A';
 			int oldXPos = Integer.parseInt(move.substring(1,2)) - 1;
-			int newYPos = move.charAt(0) - 'A';
+			int newYPos = move.charAt(3) - 'A';
 			int newXPos = Integer.parseInt(move.substring(4,5)) - 1;
+			System.out.println(oldYPos + " " + oldXPos + " " + newYPos + " " + newXPos);
 			miniMaxBoard.moveToken(oldYPos, oldXPos, newYPos, newXPos, parentNode.isMAX() ? 'G' : 'R',false);
 			Node newNode = new Node(isMAXPlayer, parentNode.getMaxLevelLookout() - 1, move);
 			newNode.setCurrentState(miniMaxBoard.getBoardArr());
+			System.out.println("After: ");
+			miniMaxBoard.displayBoard();
 			parentNode.addChild(newNode);
 			if (newNode.getMaxLevelLookout() > 0) {
 				makeTree(newNode); // Recursive call for next level
