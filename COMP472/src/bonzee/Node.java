@@ -20,6 +20,7 @@ public class Node {
     	this.maxLevelLookout = maxLevelLookout;
     	this.isMAX = isMAX;
     	this.tokenMove = move;
+    	this.currentState = null;
     }
 
     public List<Node> getChildren() {

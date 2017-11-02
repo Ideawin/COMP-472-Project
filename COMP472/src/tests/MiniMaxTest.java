@@ -127,19 +127,19 @@ public class MiniMaxTest {
 		assertEquals(-500, node.getScore());
 	}
 	
-	/**
-	 * Try to find the best node given a null list
-	 */
-	@Test
-	public void findBestNodeNullListTest() {
-		boolean isMAX = true;
-		List<Node> children = null;
-		
-		MiniMax miniMaxObject = new MiniMax();
-		Node node = miniMaxObject.findBestNode(isMAX, children, 3);
-		
-		assertNull(node);
-	}
+//	/**
+//	 * Try to find the best node given a null list
+//	 */
+//	@Test
+//	public void findBestNodeNullListTest() {
+//		boolean isMAX = true;
+//		List<Node> children = null;
+//		
+//		MiniMax miniMaxObject = new MiniMax();
+//		Node node = miniMaxObject.findBestNode(isMAX, children, 3);
+//		
+//		assertNull(node);
+//	}
 	
 	/**
 	 * Find the best node for a MAX player 
@@ -193,6 +193,21 @@ public class MiniMaxTest {
 		
 		// Assert
 		assertSame(node, node2);
+	}
+	
+	@Test
+	public void computeNextMoves() {
+		// Mock variables
+		boolean isMAX = true;
+		MiniMax minimax = new MiniMax();
+		Node root = new Node(isMAX, 3, "");
+		root.setCurrentState(minimax.getBoard().getBoardArr());
+		
+		List<String> list = minimax.computeNextMoves(root);
+		assert(list.size() > 0);
+		for (String s : list) {
+			System.out.println(s);
+		}
 	}
 
 }
