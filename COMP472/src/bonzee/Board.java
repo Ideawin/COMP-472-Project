@@ -7,6 +7,7 @@ public class Board {
 
 	public static final int WIDTH = 9;
 	public static final int HEIGHT = 5;
+	public static final int MINIMAX_MAX_LEVEL_LOOKUP = 3;
 	final int DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE = 10;
 	final int MAX_NUMBER_OF_TOKENS_PER_PLAYER = 22;
 
@@ -389,5 +390,15 @@ public class Board {
 	public void decrementTokenCount(char token) {
 		if (token == 'R') --numG;
 		if (token == 'G') --numR;	
+	}
+	
+	/**
+	 * Method to make the AI play the next move
+	 * @param isGreen indicates if the token color of the AI is green, false if red
+	 */
+	public void playAI(boolean isGreen) {
+		MiniMax miniMax = new MiniMax();
+		miniMax.makeTree(MINIMAX_MAX_LEVEL_LOOKUP, isGreen, boardArr.clone());
+		
 	}
 }

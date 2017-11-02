@@ -12,6 +12,7 @@ public class MiniMax {
 	 * @param maxLevelLookout
 	 */
 	public void makeTree(int maxLevelLookout, boolean isMAX, char[][] currentBoardState) {
+		miniMaxBoard = new Board();
 		this.maxLevelLookout = maxLevelLookout;
 		tree = new MiniMaxTree();
 		Node root = new Node(isMAX, maxLevelLookout, "");
