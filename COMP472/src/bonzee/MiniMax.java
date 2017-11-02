@@ -35,14 +35,17 @@ public class MiniMax {
 	public void makeTree(Node parentNode) {
 		boolean isMAXPlayer = !parentNode.isMAX(); // Used to set whether the child will be MAX/MIN
 		List<String> nextMoves = computeNextMoves(parentNode); // Get the next possible moves
-
+		
 		// Iterate through each possible moves and create a node for each, adding them as children to the parent node
 		// If maxLevelLookout hasn't reached 0, then the tree can have an additional level
 		for (String move : nextMoves) {
 			miniMaxBoard.setBoardArr(parentNode.getCurrentState());
 			// moves are in "C4,C5" format, need for conversion from letter to int, and from char to int
-			miniMaxBoard.moveToken(move.charAt(0) - 'A', move.charAt(1) - '0' - 1, move.charAt(3) - 'A', move.charAt(4) - '0' - 1, parentNode.isMAX() ? 'G' : 'R',false);
-
+			int oldYPos = move.charAt(0) - 'A';
+			int oldXPos = Integer.parseInt(move.substring(1,2)) - 1;
+			int newYPos = move.charAt(0) - 'A';
+			int newXPos = Integer.parseInt(move.substring(4,5)) - 1;
+			miniMaxBoard.moveToken(oldYPos, oldXPos, newYPos, newXPos, parentNode.isMAX() ? 'G' : 'R',false);
 			Node newNode = new Node(isMAXPlayer, parentNode.getMaxLevelLookout() - 1, move);
 			newNode.setCurrentState(miniMaxBoard.getBoardArr());
 			parentNode.addChild(newNode);
