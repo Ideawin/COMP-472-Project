@@ -1,4 +1,5 @@
 package bonzee;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Node {
@@ -21,6 +22,7 @@ public class Node {
     	this.isMAX = isMAX;
     	this.tokenMove = move;
     	this.currentState = null;
+    	this.children = new ArrayList<Node>();
     }
 
     public List<Node> getChildren() {
