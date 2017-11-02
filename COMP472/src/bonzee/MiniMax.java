@@ -224,23 +224,75 @@ public class MiniMax {
 	 * @param children
 	 * @return the best node
 	 */
-	public Node findBestNode(boolean isMAX, List<Node> children, int currentLevel) {
+    public Node findBestNode(boolean isMAX, List<Node> children, int currentLevel) {
 		// TO-DO: iterate through children and select the appropriate node
+    	Node highestScoreNode = new Node(isMAX, currentLevel, null);
+    	
+    	//Attributes to store the Nodes
+    	Node previousNode = new Node(isMAX, currentLevel, null);
+    	Node currentNode = new Node(isMAX, currentLevel, null);
+    	
+    	//Attributes to store the Score
+    	int highestScoreNew = 0;
+    	int highestScoreOld = 0;
+    	
+    	//Checking Null list
+		if(children == null)
+		{
+			return null;
+		}
+    	
 		if (isMAX) {
-			//System.out.print("MAX Level : " + currentLevel + " ");
-			for (Node n : children) {
+
+			System.out.print("MAX Level : " + currentLevel + " ");
+			
+			for (Node n : children) {				
+				
 				// Display the scores first
 				System.out.print(n.getScore() + " ");
-				// Find the HIGHEST score using n.getScore() and compare somehow (perhaps by doing int highestScore = n.getScore(); and compare?)
+				
+				// Find the HIGHEST score using n.getScore() and compare somehow (perhaps by doing int highestScore = n.getScore(); and compare?)				
+				
+				//Compare the previous node with current node:
+				
+				currentNode = n;	
+				highestScoreNew = currentNode.getScore();
+												
+				//Comparing: if the new score is greater than the old score then set the highestScored node to the new node (currentNode)
+				if(highestScoreNew >= highestScoreOld )
+				{
+					highestScoreNode.setScore(currentNode.getScore());
+					highestScoreNode = currentNode;
+				}
+				//Saving the previous node and score
+				previousNode = n;
+				highestScoreOld = previousNode.getScore();
 			}
 		}
 		else {
 			//System.out.print("MIN Level : " + currentLevel + " ");
 			for (Node n : children) {
 				// Find the LOWEST score using n.getScore() and compare somehow
+				
+				// Display the scores first
+				System.out.print(n.getScore() + " ");
+				
+				//Compare the previous node with current node
+				currentNode = n;	
+				highestScoreNew = currentNode.getScore();
+				
+				//Comparing: if the new score is smaller than the old score then set highestScored node to the new node (currentNode)
+				if(highestScoreNew <= highestScoreOld)
+				{
+					highestScoreNode.setScore(currentNode.getScore());
+					highestScoreNode = currentNode;
+				}
+				//Saving the previous node and score
+				previousNode = n;
+				highestScoreOld = previousNode.getScore();
 			}
 		}
-		return null;
+		return highestScoreNode;
 	}
 	
 	/**
