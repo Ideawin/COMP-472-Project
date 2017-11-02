@@ -405,7 +405,7 @@ public class Board {
 	 */
 	public void playAI(boolean isGreen) {
 		MiniMax miniMax = new MiniMax();
-		miniMax.makeTree(MINIMAX_MAX_LEVEL_LOOKUP, isGreen, boardArr.clone());
+		miniMax.makeTree(1, isGreen, boardArr);
 		
 	}
 }

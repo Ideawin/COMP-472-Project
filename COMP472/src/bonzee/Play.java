@@ -83,6 +83,7 @@ public class Play {
 					// AI is red and it's red's turn 
 					bonzeeBoard.playAI(false);					
 				}
+				
 				bonzeeBoard.displayBoard();
 				
 				// Check if the game is over
