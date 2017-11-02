@@ -41,7 +41,7 @@ public class MiniMax {
 		for (String move : nextMoves) {
 			miniMaxBoard.setBoardArr(parentNode.getCurrentState());
 			// moves are in "C4,C5" format, need for conversion from letter to int, and from char to int
-			miniMaxBoard.moveToken(move.charAt(0) - 'A', move.charAt(1) - '0', move.charAt(3) - 'A', move.charAt(4) - '0', parentNode.isMAX() ? 'G' : 'R',false);
+			miniMaxBoard.moveToken(move.charAt(0) - 'A', move.charAt(1) - '0' - 1, move.charAt(3) - 'A', move.charAt(4) - '0' - 1, parentNode.isMAX() ? 'G' : 'R',false);
 
 			Node newNode = new Node(isMAXPlayer, parentNode.getMaxLevelLookout() - 1, move);
 			newNode.setCurrentState(miniMaxBoard.getBoardArr());
