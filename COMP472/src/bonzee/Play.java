@@ -147,7 +147,7 @@ public class Play {
 							int oldXPos = initialX - 1;
 							int newYPos = finalY - 'A';
 							int newXPos = finalX - 1;
-							moved = bonzeeBoard.moveToken(oldYPos, oldXPos, newYPos, newXPos, tokenG ? 'G' : 'R',false);
+							moved = bonzeeBoard.moveToken(oldYPos, oldXPos, newYPos, newXPos, tokenG ? 'G' : 'R',false,false);
 							if (moved){
 								bonzeeBoard.displayBoard();
 								if (isFinal()) break;

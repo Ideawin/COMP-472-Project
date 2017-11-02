@@ -15,14 +15,15 @@ public class Board {
 	char[][] boardArr;
 	int numR;
 	int numG;
-	
+	boolean doingMiniMax = false;
+
 	/**
 	 * Get the height
 	 */
 	public int getHeight() {
 		return HEIGHT;
 	}
-	
+
 	/**
 	 * Get the width
 	 * @return
@@ -43,14 +44,14 @@ public class Board {
 		}
 		this.boardArr = board;
 	}
-	
+
 	/**
 	 * Get the boardArr
 	 */
 	public char[][] getBoardArr() {
 		return boardArr;
 	}
-	
+
 	/**
 	 * Method to get the number of RED tokens currently on the board
 	 * @return an integer representing the number of RED tokens
@@ -133,8 +134,8 @@ public class Board {
 	 * @param token 'R' or 'G'
 	 * @param checkValidityForMinMax True if it is used in MiniMax to check if a move is valid
 	 * */
-	public boolean moveToken(int oldYPos, int oldXPos, int newYPos, int newXPos, char tokenToMove, boolean checkValidityForMinMax) {
-
+	public boolean moveToken(int oldYPos, int oldXPos, int newYPos, int newXPos, char tokenToMove, boolean checkValidityForMinMax, boolean doingMiniMax) {
+		this.doingMiniMax = doingMiniMax;
 		if (isEmpty(newXPos, newYPos)) {
 			char token = getTokenAtPosition(oldYPos,oldXPos);
 			if (token == tokenToMove) {
@@ -306,13 +307,15 @@ public class Board {
 				ctr = consecutiveAttack(i, j+2, token, 'D', 0);
 			}
 		}
-		if (ctr == 0) {
-			maxConsecutiveMoves--;
-			System.out.println("No attack has been made in this turn.");
-			System.out.println("NUMBER OF CONSECUTIVE MOVES LEFT: " + maxConsecutiveMoves );
-		} else {
-			maxConsecutiveMoves = DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE;
-			System.out.println("Opponent has been attacked! " + ctr + " token(s) were removed.");
+		if (doingMiniMax == false) {
+			if (ctr == 0) {
+				maxConsecutiveMoves--;
+				System.out.println("No attack has been made in this turn.");
+				System.out.println("NUMBER OF CONSECUTIVE MOVES LEFT: " + maxConsecutiveMoves );
+			} else {
+				maxConsecutiveMoves = DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE;
+				System.out.println("Opponent has been attacked! " + ctr + " token(s) were removed.");
+			}
 		}
 	}
 
@@ -404,14 +407,14 @@ public class Board {
 		if (token == 'R') --numG;
 		if (token == 'G') --numR;	
 	}
-	
+
 	/**
 	 * Method to make the AI play the next move
 	 * @param isGreen indicates if the token color of the AI is green, false if red
 	 */
 	public void playAI(boolean isGreen) {
 		MiniMax miniMax = new MiniMax();
-		miniMax.makeTree(1, isGreen, boardArr);
-		
+		miniMax.makeTree(3, isGreen, boardArr);
+
 	}
 }
