@@ -75,8 +75,8 @@ public class MiniMax {
 		List<Node> children = node.getChildren();
 		boolean isMAXPlayer = node.isMAX();
 		for (Node child : children) {
-			// == 0 if at the last level
-			if (child.getMaxLevelLookout() == 0) {
+			// == 0 if at the last level or there are no children, i.e. the child is a winning node
+			if (child.getMaxLevelLookout() == 0 || child.getChildren() == null || child.getChildren().isEmpty()) {
 				calculateScore(child);
 			}
 			else
@@ -246,7 +246,7 @@ public class MiniMax {
 		if (isMAX) {
 			for (Node n : children) {				
 				// Display the scores first
-				System.out.print(n.getScore() + " ");				
+//				System.out.print(n.getScore() + " ");				
 				
 				// Comparing
 				if(highestScoreNode == null) {
@@ -261,7 +261,7 @@ public class MiniMax {
 			for (Node n : children) {
 				// Find the LOWEST score using n.getScore() and compare
 				// Display the scores first
-				System.out.print(n.getScore() + " ");
+//				System.out.print(n.getScore() + " ");
 				
 				// Comparing
 				if(highestScoreNode == null) {
