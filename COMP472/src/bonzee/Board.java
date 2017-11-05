@@ -415,7 +415,7 @@ public class Board {
 	 */
 	public void playAI(boolean isGreen) {
 		MiniMax miniMax = new MiniMax();
-		miniMax.makeTree(5, isGreen, boardArr);
+		miniMax.makeTree(MINIMAX_MAX_LEVEL_LOOKUP, isGreen, boardArr);
 		String nextBestMove = miniMax.evaluateChildrenAndGetNextMove();
 		this.moveToken(nextBestMove.charAt(0) - 'A', 
 						nextBestMove.charAt(1) - '0' - 1, 
