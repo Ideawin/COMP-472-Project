@@ -113,7 +113,7 @@ public class Board {
 	 * Method to display contents of the board
 	 */
 	public void displayBoard() {
-		System.out.println("\t|   1\t|   2\t|   3\t|   4\t|   5\t|   6\t|   7\t|   8\t|   9\t|");
+		System.out.println("\n\t|   1\t|   2\t|   3\t|   4\t|   5\t|   6\t|   7\t|   8\t|   9\t|");
 		System.out.println("---------------------------------------------------------------------------------");
 		for (int i = 0; i < HEIGHT; i++) {
 			System.out.print(((char)(i + 'A')) + "\t");
@@ -125,6 +125,7 @@ public class Board {
 			System.out.println("|");
 			System.out.println("---------------------------------------------------------------------------------");
 		}
+		System.out.println("");
 	}
 
 	/**
@@ -414,7 +415,7 @@ public class Board {
 	 */
 	public void playAI(boolean isGreen) {
 		MiniMax miniMax = new MiniMax();
-		miniMax.makeTree(MINIMAX_MAX_LEVEL_LOOKUP, isGreen, boardArr);
+		miniMax.makeTree(3, isGreen, boardArr);
 		String nextBestMove = miniMax.evaluateChildrenAndGetNextMove();
 		this.moveToken(nextBestMove.charAt(0) - 'A', 
 						nextBestMove.charAt(1) - '0' - 1, 

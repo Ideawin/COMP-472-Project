@@ -86,6 +86,17 @@ public class MiniMax {
 		Node bestNode = findBestNode(isMAXPlayer, children, this.maxLevelLookout - node.getMaxLevelLookout()); // Find the best move among the children
 		node.setScore(bestNode.getScore());
 		node.setNextBestMove(bestNode.getTokenMove());
+		
+		// Display the move the AI chose and the scores of first level only
+		if (node.equals(tree.getRoot())) {
+			System.out.println("==> AI chose move [" + bestNode.getTokenMove() + "] with a score of [" + bestNode.getScore() + "]");
+			String childrenScores = "";
+			childrenScores += "==> Level 1 scores: ";
+			for (Node child : children) {
+				childrenScores += " [" + child.getScore() + "] ";
+			}
+			System.out.println(childrenScores);
+		}
 	}
 
 	/**
