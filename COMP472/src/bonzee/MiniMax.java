@@ -16,7 +16,9 @@ public class MiniMax {
 	
 	/**
 	 * First method to call when it is the AI player's turn
-	 * @param maxLevelLookout
+	 * @param maxLevelLookout the max look-ahead level
+	 * @param isMAX whether player is MAX or MIN
+	 * @param currentBoardState a 2d array of char representing the current board state
 	 */
 	public void makeTree(int maxLevelLookout, boolean isMAX, char[][] currentBoardState) {
 		miniMaxBoard = new Board();
@@ -38,7 +40,6 @@ public class MiniMax {
 		
 		// Iterate through each possible moves and create a node for each, adding them as children to the parent node
 		// If maxLevelLookout hasn't reached 0, then the tree can have an additional level
-
 		for (String move : nextMoves) {
 			miniMaxBoard.setBoardArr(parentNode.getCurrentState());
 			// moves are in "C4,C5" format, need for conversion from letter to int, and from char to int
@@ -62,14 +63,13 @@ public class MiniMax {
 	public String evaluateChildrenAndGetNextMove() {
 		Node root = tree.getRoot();
 		evaluateChildren(root);
-		// MUST DISPLAY THE TREE HERE TO SHOW SCORES PROPAGATING UP!
 		return root.getNextBestMove();
 	}
 
 	/**
 	 * Evaluate children using the heuristics if we are at the last level.
 	 * Recur over each child if we still haven't reached the last level.
-	 * @param node
+	 * @param node parent node
 	 */
 	public void evaluateChildren(Node node) {
 		List<Node> children = node.getChildren();
@@ -101,10 +101,10 @@ public class MiniMax {
 
 	/**
 	 * Method to create a list of possible next moves as strings ex. "A1,B1" implies moving A1 to B1
+	 * @param parentNode
 	 * @return List of String values
 	 */
 	public List<String> computeNextMoves(Node parentNode) {
-		// TO-DO: Make a list of all possible next moves, each move being a String ex. "A1,B1"
 		// Maybe make use of attribute currentBoardState?
 		List<String> list = new ArrayList<>();
 		
@@ -240,7 +240,8 @@ public class MiniMax {
 	/**
 	 * Method to find the best next move
 	 * @param isMAXPlayer a Boolean indicating whether the PARENT node is MIN or MAX
-	 * @param children
+	 * @param children list of Node that are children to the parent node
+	 * @param currentLevel current look-ahead level
 	 * @return the best node
 	 */
     public Node findBestNode(boolean isMAX, List<Node> children, int currentLevel) {
@@ -255,10 +256,7 @@ public class MiniMax {
 		}
     	
 		if (isMAX) {
-			for (Node n : children) {				
-				// Display the scores first
-//				System.out.print(n.getScore() + " ");				
-				
+			for (Node n : children) {
 				// Comparing
 				if(highestScoreNode == null) {
 					highestScoreNode = n;
@@ -271,9 +269,6 @@ public class MiniMax {
 		else {
 			for (Node n : children) {
 				// Find the LOWEST score using n.getScore() and compare
-				// Display the scores first
-//				System.out.print(n.getScore() + " ");
-				
 				// Comparing
 				if(highestScoreNode == null) {
 					highestScoreNode = n;

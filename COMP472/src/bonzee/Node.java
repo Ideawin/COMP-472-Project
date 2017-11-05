@@ -26,30 +26,51 @@ public class Node {
     	this.children = new ArrayList<Node>();
     }
 
+    /**
+     * Get the children of the node, which represents the next possible moves
+     * @return
+     */
     public List<Node> getChildren() {
     	return children;
     }
     
+    /**
+     * Add a child to the list of children for the node, which represents one possible move
+     * @param node
+     */
     public void addChild(Node node) {
     	this.children.add(node);
     }
     
-    public int getScore() {
-    	return score;
-    }
     
+    /**
+     * Get whether player is MIN or MAX
+     * @return
+     */
     public boolean isMAX() {
     	return isMAX;
     }
     
+    /**
+     * Get the look-ahead level
+     * @return
+     */
     public int getMaxLevelLookout() {
     	return maxLevelLookout;
     }
     
-    public void calculateScore() {
-    	// Use the heuristics and then do
+    /**
+     * Get the score
+     * @return
+     */
+    public int getScore() {
+    	return score;
     }
     
+    /**
+     * Set the score to the node
+     * @param score after evaluation
+     */
     public void setScore(int score) {
     	this.score = score;
     }
@@ -90,7 +111,7 @@ public class Node {
 	
 	/**
 	 * Get token move
-	 * @return
+	 * @return a string in the format "A1,B1"
 	 */
 	public String getTokenMove() {
 		return tokenMove;
