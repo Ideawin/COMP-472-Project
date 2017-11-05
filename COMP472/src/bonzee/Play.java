@@ -59,7 +59,7 @@ public class Play {
 		System.out.println("Rules:\n 1. Input your next move in the following format:\n" + " \tA2,B2 where A2 is the token you want to move, and B2 is its final position, and where A is the Y-direction and 2 is the X-direction\n");
 		System.out.println(" 2. Cases representation:");
 		System.out.println("\t"+"a." + "|*|" + " Represents a black-case. " + "This means that you are allowed to move the token of one position in the following directions:");
-		System.out.println( "\t\t Up, Down, Left, Right, Diagonaly");
+		System.out.println( "\t\t Up, Down, Left, Right, Diagonally");
 		System.out.println("\t"+"b." + "Cases not indicated by a" +  " |*| "+ " mean that you are only allowed to move the token of one position in the following directions:");
 		System.out.println("\t\t Up, Down, Left, Right.\n");
 
