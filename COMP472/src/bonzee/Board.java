@@ -1,11 +1,13 @@
+package bonzee;
 /**
  * Class that represents the game board
  *
  */
 public class Board {
 
-	final int WIDTH = 9;
-	final int HEIGHT = 5;
+	public static final int WIDTH = 9;
+	public static final int HEIGHT = 5;
+	public static final int MINIMAX_MAX_LEVEL_LOOKUP = 3;
 	final int DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE = 10;
 	final int MAX_NUMBER_OF_TOKENS_PER_PLAYER = 22;
 
@@ -13,6 +15,42 @@ public class Board {
 	char[][] boardArr;
 	int numR;
 	int numG;
+	boolean doingMiniMax = false;
+
+	/**
+	 * Get the height
+	 */
+	public int getHeight() {
+		return HEIGHT;
+	}
+
+	/**
+	 * Get the width
+	 * @return
+	 */
+	public int getWidth() {
+		return WIDTH;
+	}
+
+	/**
+	 * Set the boardArr
+	 */
+	public void setBoardArr(char[][] boardArr) {
+		char[][] board = new char[HEIGHT][WIDTH];
+		for (int i = 0; i < HEIGHT; i++) {
+			for (int j = 0; j < WIDTH; j++) {
+				board[i][j] = boardArr[i][j];
+			}
+		}
+		this.boardArr = board;
+	}
+
+	/**
+	 * Get the boardArr
+	 */
+	public char[][] getBoardArr() {
+		return boardArr;
+	}
 
 	/**
 	 * Method to get the number of RED tokens currently on the board
@@ -75,7 +113,7 @@ public class Board {
 	 * Method to display contents of the board
 	 */
 	public void displayBoard() {
-		System.out.println("\t|   1\t|   2\t|   3\t|   4\t|   5\t|   6\t|   7\t|   8\t|   9\t|");
+		System.out.println("\n\t|   1\t|   2\t|   3\t|   4\t|   5\t|   6\t|   7\t|   8\t|   9\t|");
 		System.out.println("---------------------------------------------------------------------------------");
 		for (int i = 0; i < HEIGHT; i++) {
 			System.out.print(((char)(i + 'A')) + "\t");
@@ -87,6 +125,7 @@ public class Board {
 			System.out.println("|");
 			System.out.println("---------------------------------------------------------------------------------");
 		}
+		System.out.println("");
 	}
 
 	/**
@@ -94,56 +133,60 @@ public class Board {
 	 * @param x
 	 * @param y
 	 * @param token 'R' or 'G'
-	 */
-	public boolean moveToken(char oldY, int oldX, char newY, int newX, char tokenToMove) {
-
-		// Convert positions into index
-		int oldYPos = oldY - 'A';
-		int oldXPos = oldX - 1;
-		int newYPos = newY - 'A';
-		int newXPos = newX - 1;
-
+	 * @param checkValidityForMinMax True if it is used in MiniMax to check if a move is valid
+	 * */
+	public boolean moveToken(int oldYPos, int oldXPos, int newYPos, int newXPos, char tokenToMove, boolean checkValidityForMinMax, boolean doingMiniMax) {
+		this.doingMiniMax = doingMiniMax;
 		if (isEmpty(newXPos, newYPos)) {
-			// Check if it's your turn
-			char token = getTokenAtPosition(oldY,oldX);
+			char token = getTokenAtPosition(oldYPos,oldXPos);
 			if (token == tokenToMove) {
-				int xVector = newX - oldX;
-				int yVector =  newY - oldY;
+				int xVector = newXPos - oldXPos;
+				int yVector =  newYPos - oldYPos;
 				int direction = Math.abs(xVector) + Math.abs(yVector);
 				boolean isBlack = blackCell(oldXPos,oldYPos);
 
 				// If next move is not horizontal/vertical and is white
 				if (direction > 1 && !isBlack) {
-					System.out.println("Invalid Move: Cannot move diagonally on white cases. Try Again!!");
+					if (!checkValidityForMinMax) {
+						System.out.println("Invalid Move: Cannot move diagonally on white cases. Try Again!!");
+					}
 					return false;
 				}
 				// If next move is not adjacent
 				if (Math.abs(xVector) > 1 || Math.abs(yVector) > 1) {
-					System.out.println("Invalid Move: The next position is not adjacent to the current token. Try Again!!");
+					if (!checkValidityForMinMax) {
+						System.out.println("Invalid Move: The next position is not adjacent to the current token. Try Again!!");
+					}
 					return false;
 				}
 				else
 				{
-					// Set old cell to empty
-					boardArr[oldYPos][oldXPos] = ' ';
-					// Set new cell to the token color
-					boardArr[newYPos][newXPos] = tokenToMove;
-					// Attack
-					attack(newYPos,newXPos,xVector,yVector,token);
+					if (!checkValidityForMinMax) {
+						// Set old cell to empty
+						boardArr[oldYPos][oldXPos] = ' ';
+						// Set new cell to the token color
+						boardArr[newYPos][newXPos] = tokenToMove;
+						// Attack
+						attack(newYPos,newXPos,xVector,yVector,token);
+					}
 					return true;
 				}
 			}
 			else {
-				if (token == ' ') {
-					System.out.println("Invalid Move: There is no token to move at this position. Try again!!");
+				if (!checkValidityForMinMax) {
+					if (token == ' ') {
+						System.out.println("Invalid Move: There is no token to move at this position. Try again!!");
+					}
+					else
+						System.out.println("Invalid Move: Cannot move the opponent's token. Try again!!");
 				}
-				else
-					System.out.println("Invalid Move: Cannot move the opponent's token. Try again!!");
 				return false;
 			}
 		}
 		else {
-			System.out.println("Invalid Move: This position is already taken. Try again!!");
+			if (!checkValidityForMinMax) {
+				System.out.println("Invalid Move: This case is not empty. Try again!!");
+			}
 			return false;
 		}
 
@@ -178,10 +221,8 @@ public class Board {
 	 * @param pos
 	 * @return
 	 */
-	public char getTokenAtPosition(char y, int x) {
-		int yPos = y - 'A';
-		int xPos = x - 1;
-		return boardArr[yPos][xPos];
+	public char getTokenAtPosition(int y, int x) {
+		return boardArr[y][x];
 	}
 
 	/**
@@ -267,13 +308,15 @@ public class Board {
 				ctr = consecutiveAttack(i, j+2, token, 'D', 0);
 			}
 		}
-		if (ctr == 0) {
-			maxConsecutiveMoves--;
-			System.out.println("No attack has been made in this turn.");
-			System.out.println("NUMBER OF CONSECUTIVE MOVES LEFT: " + maxConsecutiveMoves );
-		} else {
-			maxConsecutiveMoves = DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE;
-			System.out.println("Opponent has been attacked! " + ctr + " token(s) were removed.");
+		if (doingMiniMax == false) {
+			if (ctr == 0) {
+				maxConsecutiveMoves--;
+				System.out.println("No attack has been made in this turn.");
+				System.out.println("NUMBER OF CONSECUTIVE MOVES LEFT: " + maxConsecutiveMoves );
+			} else {
+				maxConsecutiveMoves = DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE;
+				System.out.println("Opponent has been attacked! " + ctr + " token(s) were removed.");
+			}
 		}
 	}
 
@@ -364,5 +407,21 @@ public class Board {
 	public void decrementTokenCount(char token) {
 		if (token == 'R') --numG;
 		if (token == 'G') --numR;	
+	}
+
+	/**
+	 * Method to make the AI play the next move
+	 * @param isGreen indicates if the token color of the AI is green, false if red
+	 */
+	public void playAI(boolean isGreen) {
+		MiniMax miniMax = new MiniMax();
+		miniMax.makeTree(MINIMAX_MAX_LEVEL_LOOKUP, isGreen, boardArr);
+		String nextBestMove = miniMax.evaluateChildrenAndGetNextMove();
+		this.moveToken(nextBestMove.charAt(0) - 'A', 
+						nextBestMove.charAt(1) - '0' - 1, 
+						nextBestMove.charAt(3) - 'A', 
+						nextBestMove.charAt(4) - '0' - 1, 
+						isGreen ? 'G' : 'R', 
+						false, false);
 	}
 }

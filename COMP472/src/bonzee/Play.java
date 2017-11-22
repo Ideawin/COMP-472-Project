@@ -1,8 +1,8 @@
+package bonzee;
 import java.util.Scanner;
 
 public class Play {
 	
-	private static boolean moved = false;
 	private static Board bonzeeBoard;
 	
 	/**
@@ -11,7 +11,6 @@ public class Play {
 	 */
 	public static void main(String[] args) {
 		bonzeeBoard = new Board();
-		bonzeeBoard.displayBoard();
 		startGame();
 	}
 	
@@ -21,25 +20,83 @@ public class Play {
 	public static void startGame() {
 		Scanner scanner = new Scanner(System.in);
 		boolean tokenG = true;
-
+		boolean playAgainstAI = true;
+		boolean isAIGreen = true;
+		boolean moved = false;
+		
+		// -----------------------------------------------------------------------
+		// Ask the user for the game mode (AI or Player)
+		// -----------------------------------------------------------------------
+		System.out.println("Do you want to play against another player or against an AI? ('P' for player, 'AI' for AI)");
+		String playAgainstAIString = "";
+		do {
+			playAgainstAIString = scanner.nextLine();
+			if(playAgainstAIString.equalsIgnoreCase("P")) {
+				playAgainstAI = false;
+			} else if (!playAgainstAIString.equalsIgnoreCase("AI")) {
+				System.out.println("Wrong option. Please choose between 'P' for player and 'AI' for AI");
+			}
+		} while (!playAgainstAIString.equalsIgnoreCase("P") && !playAgainstAIString.equalsIgnoreCase("AI"));
+		
+		// If we play against AI, pick at random who is which color
+		if(playAgainstAI) {
+			System.out.println("Do you want to be green or red? (G for green, R for red)");
+			String userColor = "";
+			do {
+				userColor = scanner.nextLine();
+				if(userColor.equalsIgnoreCase("G")) {
+					isAIGreen = false;
+				} else if (!userColor.equalsIgnoreCase("R")) {
+					System.out.println("Wrong option. Please choose between 'G' for green or 'R' for red");
+				}
+			} while (!userColor.equalsIgnoreCase("G") && !userColor.equalsIgnoreCase("R"));
+		}
+		
+		// -----------------------------------------------------------------------
+		// Display the board then the rules
+		// -----------------------------------------------------------------------
+		bonzeeBoard.displayBoard();
 		System.out.println("Rules:\n 1. Input your next move in the following format:\n" + " \tA2,B2 where A2 is the token you want to move, and B2 is its final position, and where A is the Y-direction and 2 is the X-direction\n");
 		System.out.println(" 2. Cases representation:");
 		System.out.println("\t"+"a." + "|*|" + " Represents a black-case. " + "This means that you are allowed to move the token of one position in the following directions:");
-		System.out.println( "\t\t Up, Down, Left, Right, Diagonaly");
+		System.out.println( "\t\t Up, Down, Left, Right, Diagonally");
 		System.out.println("\t"+"b." + "Cases not indicated by a" +  " |*| "+ " mean that you are only allowed to move the token of one position in the following directions:");
 		System.out.println("\t\t Up, Down, Left, Right.\n");
 
 		System.out.println("Start playing!\n");
 
-		// GAME LOOP: 
-		// TODO: Find actual condition until the game is over
-		// TODO: The Board should return us with a boolean to say if the move was valid or not, if it's not valid, continue in the game loop
+		// -----------------------------------------------------------------------
+		// Game Loop
+		// -----------------------------------------------------------------------
 		while(bonzeeBoard.getMaxConsecutiveMoves() > 0) {
 			System.out.print("It's ");
 			System.out.print(tokenG ? "Green's " : "Red's ");
 			System.out.println("turn.");
 
 			// READ INPUT
+			// Check if it is AI's turn to play
+			if(playAgainstAI && ((isAIGreen && tokenG) || (!isAIGreen && !tokenG))) {
+				if(isAIGreen && tokenG) {
+					// AI is green and it's green's turn
+					bonzeeBoard.playAI(true);
+				} else if (!isAIGreen && !tokenG) {
+					// AI is red and it's red's turn 
+					bonzeeBoard.playAI(false);					
+				}
+				
+				bonzeeBoard.displayBoard();
+				
+				// Check if the game is over
+				if(isFinal()) {
+					break;
+				} else if (checkIfConsecutiveDefensiveMoveReached()) {
+					break;
+				} else {
+					tokenG = !tokenG;
+					continue;
+				}
+			}
+			
 			String input = scanner.nextLine();
 			input = input.toUpperCase();
 
@@ -85,7 +142,12 @@ public class Play {
 
 						// Call the game
 						if(initialX != -1 && finalX != -1) {
-							moved = bonzeeBoard.moveToken(initialY, initialX, finalY, finalX, tokenG ? 'G' : 'R');
+							// Convert positions into index
+							int oldYPos = initialY - 'A';
+							int oldXPos = initialX - 1;
+							int newYPos = finalY - 'A';
+							int newXPos = finalX - 1;
+							moved = bonzeeBoard.moveToken(oldYPos, oldXPos, newYPos, newXPos, tokenG ? 'G' : 'R',false,false);
 							if (moved){
 								bonzeeBoard.displayBoard();
 								if (isFinal()) break;
@@ -99,8 +161,9 @@ public class Play {
 
 			// Switch turn
 			tokenG = !tokenG;
-			if (bonzeeBoard.getMaxConsecutiveMoves() == 0)
-				System.out.println("10 non-attacking consecutive moves have been made. The game is DRAW.");
+			if(checkIfConsecutiveDefensiveMoveReached()) {
+				break;
+			}
 		}
 		scanner.close();
 	}
@@ -121,6 +184,17 @@ public class Play {
 			else
 				isFinal = false;
 		return(isFinal);
-
+	}
+	
+	/**
+	 * Check if the max consecutive defensive moves have been reached
+	 * @return true if it is reached, false otherwise
+	 */
+	public static boolean checkIfConsecutiveDefensiveMoveReached() {
+		if (bonzeeBoard.getMaxConsecutiveMoves() == 0) {
+			System.out.println("10 non-attacking consecutive moves have been made. The game is DRAW.");
+			return true;
+		}
+		return false;
 	}
 }
