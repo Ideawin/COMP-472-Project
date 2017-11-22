@@ -113,6 +113,14 @@ public class MiniMax {
 		boolean isValid;
 		for (int i = 0; i < miniMaxBoard.getHeight(); i++) {
 			for (int j = 0; j < miniMaxBoard.getWidth(); j++) {
+    	    	char token = miniMaxBoard.getTokenAtPosition(i, j);
+    			if(token != 'G' && token != 'R') {
+    				break;
+    			}
+    			if (token != (isMAXPlayer ? 'G' : 'R')) {
+    				break;
+    			}
+    			
 				if (i == 0 && j == 0) {
 					isValid = miniMaxBoard.moveToken(i, j, i, (j+1), isMAXPlayer ? 'G' : 'R',true,true); // right
 					if (isValid) list.add((char)(i+'A') + "" + (j+1) + "," + (char)(i+'A') + "" + (j+2));
@@ -234,13 +242,18 @@ public class MiniMax {
     	for(int i = 0; i < node.currentState.length; i++) {
     		for(int j = 0; j < node.currentState[i].length; j++ ) {
     	    	boolean safe = true;
-    			if(node.currentState[i][j] == 'G') {
+    	    	char token = node.currentState[i][j];
+    			if(token == 'G') {
     				gCtr++;
 
-    			} else if (node.currentState[i][j] == 'R') {
+    			} else if (token == 'R') {
     				rCtr++;
     			}
+    			else
+    				break;
+    			
     			// Check for up
+    			
     			// Check for down
     			// Check for left
     			// Check for right
