@@ -219,11 +219,16 @@ public class MiniMax {
      * @param node one of the child node
      */
     public void calculateScore(Node node) {
-    	// Start the score at 0
-    	int score = 0;
+    	// Initializing random values
+    	// TODO use real values
+    	int x = 10;
+    	int y = 5;
+    	int z = 3;
+    	double score = 0;
     	int safeScore = 0;
     	int gCtr = 0;
     	int rCtr = 0;
+    	int defendOrAttackScore = 0;
     	
     	// Look for all G/R tokens through the board
     	for(int i = 0; i < node.currentState.length; i++) {
@@ -239,17 +244,26 @@ public class MiniMax {
     			// Check for down
     			// Check for left
     			// Check for right
-    			// if isBlack 
-    			//	check diagonals
+    			if (miniMaxBoard.blackCell(j, i)) {
+    				// Check diagonal up-left
+    				// Check diagonal up-right
+    				// Check diagonal down-left
+    				// Check diagonal down-right
+    			}
+    			
         		if (safe) {
-        			// safeScore += z;
-        		}
-        		else {
-        			// safeScore -+ z;
+        			if (node.currentState[i][j] == 'G') {
+        				safeScore += z;
+        			}
+        			else {
+        				safeScore -= z;
+        			}
+        				
         		}
     		}
     	}
-    	node.setScore(score);
+    	score = 0.5*(safeScore) + 0.2*(gCtr - rCtr) + 0.15*(defendOrAttackScore);
+    	node.setScore((int)score);
     }
 
 	/**
