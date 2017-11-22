@@ -221,17 +221,32 @@ public class MiniMax {
     public void calculateScore(Node node) {
     	// Start the score at 0
     	int score = 0;
+    	int safeScore = 0;
+    	int gCtr = 0;
+    	int rCtr = 0;
     	
     	// Look for all G/R tokens through the board
     	for(int i = 0; i < node.currentState.length; i++) {
     		for(int j = 0; j < node.currentState[i].length; j++ ) {
+    	    	boolean safe = true;
     			if(node.currentState[i][j] == 'G') {
-    				// If green, update the score to be 100 * horizontalIndex + 50 * verticalIndex
-    				score += (100 * (i + 1)) + (50 * (j + 1));
+    				gCtr++;
+
     			} else if (node.currentState[i][j] == 'R') {
-    				// If red, update the score to be -100 * horizontalIndex + -50 * verticalIndex
-    				score -= (100 * (i + 1)) + (50 * (j + 1));
+    				rCtr++;
     			}
+    			// Check for up
+    			// Check for down
+    			// Check for left
+    			// Check for right
+    			// if isBlack 
+    			//	check diagonals
+        		if (safe) {
+        			// safeScore += z;
+        		}
+        		else {
+        			// safeScore -+ z;
+        		}
     		}
     	}
     	node.setScore(score);
