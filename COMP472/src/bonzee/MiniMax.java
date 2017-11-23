@@ -320,11 +320,12 @@ public class MiniMax {
 	public int calculateAttackingScores(int i, int j, Node node, char oppToken, char currentToken, int code) {
 		int score = 0;
 		int x = 100;
-			switch(code) {
-			case 1: // up
-				if (i-2 > 0) {
-					if ((node.currentState[i-1][j] == oppToken && node.currentState[i-2][j] == ' ') || (node.currentState[i-1][j] == ' ' && node.currentState[i-2][j] == oppToken)) {
-						score += x;
+		switch(code) {
+		case 1: // up
+			if (i-2 > 0) {
+				if ((node.currentState[i-1][j] == oppToken && node.currentState[i-2][j] == ' ') || (node.currentState[i-1][j] == ' ' && node.currentState[i-2][j] == oppToken)) {
+					score += x;
+					if (i+1 < miniMaxBoard.getHeight()) {
 						if (node.currentState[i+1][j] == currentToken) {
 							score += x;
 							if (i+2 < miniMaxBoard.getHeight()) {
@@ -335,10 +336,12 @@ public class MiniMax {
 						}
 					}
 				}
-			case 2: // down
-				if (i+2 < miniMaxBoard.getHeight()) {
-					if ((node.currentState[i+1][j] == oppToken && node.currentState[i+2][j] == ' ') || ((node.currentState[i+1][j] == ' ' && node.currentState[i+2][j] == oppToken))) {
-						score += x;
+			}
+		case 2: // down
+			if (i+2 < miniMaxBoard.getHeight()) {
+				if ((node.currentState[i+1][j] == oppToken && node.currentState[i+2][j] == ' ') || ((node.currentState[i+1][j] == ' ' && node.currentState[i+2][j] == oppToken))) {
+					score += x;
+					if (i-1 > 0) {
 						if (node.currentState[i-1][j] == currentToken) {
 							score += x;
 							if (i-2 > 0) {
@@ -349,10 +352,12 @@ public class MiniMax {
 						}
 					}
 				}
-			case 3: // left
-				if (j-2 > 0) {
-					if ((node.currentState[i][j-1] == oppToken && node.currentState[i][j-2] == ' ') || (node.currentState[i][j-1] == ' ' && node.currentState[i][j-2] == oppToken)) {
-						score += x;
+			}
+		case 3: // left
+			if (j-2 > 0) {
+				if ((node.currentState[i][j-1] == oppToken && node.currentState[i][j-2] == ' ') || (node.currentState[i][j-1] == ' ' && node.currentState[i][j-2] == oppToken)) {
+					score += x;
+					if (j+1 < miniMaxBoard.getWidth()) {
 						if (node.currentState[i][j+1] == currentToken) {
 							score += x;
 							if (j+2 < miniMaxBoard.getWidth()) {
@@ -363,10 +368,12 @@ public class MiniMax {
 						}
 					}
 				}
-			case 4: // right
-				if (j+2 < miniMaxBoard.getWidth()) {
-					if ((node.currentState[i][j+1] == oppToken && node.currentState[i][j+2] == ' ') || (node.currentState[i][j+1] == ' ' && node.currentState[i][j+2] == oppToken)) {
-						score += x;
+			}
+		case 4: // right
+			if (j+2 < miniMaxBoard.getWidth()) {
+				if ((node.currentState[i][j+1] == oppToken && node.currentState[i][j+2] == ' ') || (node.currentState[i][j+1] == ' ' && node.currentState[i][j+2] == oppToken)) {
+					score += x;
+					if (j-1 > 0) {
 						if (node.currentState[i][j-1] == currentToken) {
 							score += x;
 							if (j-2 > 0) {
@@ -377,10 +384,12 @@ public class MiniMax {
 						}
 					}
 				}
-			case 5: // diagonal up-left
-				if (i-2 > 0 && j-2 > 0) {
-					if ((node.currentState[i-1][j-1] == oppToken && node.currentState[i-2][j-2] == ' ') || (node.currentState[i-1][j-1] == ' ' && node.currentState[i-2][j-2] == oppToken)) {
-						score += x;
+			}
+		case 5: // diagonal up-left
+			if (i-2 > 0 && j-2 > 0) {
+				if ((node.currentState[i-1][j-1] == oppToken && node.currentState[i-2][j-2] == ' ') || (node.currentState[i-1][j-1] == ' ' && node.currentState[i-2][j-2] == oppToken)) {
+					score += x;
+					if (i+1 < miniMaxBoard.getHeight() && j+1 < miniMaxBoard.getWidth()) {
 						if (node.currentState[i+1][j+1] == currentToken) {
 							score += x;
 							if (i+2 < miniMaxBoard.getHeight() && j+2 < miniMaxBoard.getWidth()) {
@@ -391,10 +400,12 @@ public class MiniMax {
 						}
 					}
 				}
-			case 6: // diagonal up-right
-				if (i-2 > 0 && j+2 < miniMaxBoard.getWidth()) {
-					if ((node.currentState[i-1][j+1] == oppToken && node.currentState[i-2][j+2] == ' ') || (node.currentState[i-1][j+1] == ' ' && node.currentState[i-2][j+2] == oppToken)) {
-						score += x;
+			}
+		case 6: // diagonal up-right
+			if (i-2 > 0 && j+2 < miniMaxBoard.getWidth()) {
+				if ((node.currentState[i-1][j+1] == oppToken && node.currentState[i-2][j+2] == ' ') || (node.currentState[i-1][j+1] == ' ' && node.currentState[i-2][j+2] == oppToken)) {
+					score += x;
+					if (i+1 < miniMaxBoard.getHeight() && j-1 > 0) {
 						if (node.currentState[i+1][j-1] == currentToken) {
 							score += x;
 							if (j-2 > 0 && i+2 < miniMaxBoard.getHeight()) {
@@ -405,10 +416,12 @@ public class MiniMax {
 						}
 					}
 				}
-			case 7: // diagonal down-left
-				if (j-2 > 0 && i+2 < miniMaxBoard.getHeight()) {
-					if ((node.currentState[i+1][j-1] == oppToken && node.currentState[i+2][j-2] == ' ') || (node.currentState[i+1][j-1] == ' ' && node.currentState[i+2][j-2] == oppToken)) {
-						score += x;
+			}
+		case 7: // diagonal down-left
+			if (j-2 > 0 && i+2 < miniMaxBoard.getHeight()) {
+				if ((node.currentState[i+1][j-1] == oppToken && node.currentState[i+2][j-2] == ' ') || (node.currentState[i+1][j-1] == ' ' && node.currentState[i+2][j-2] == oppToken)) {
+					score += x;
+					if (i-1 > 0 && j+1 < miniMaxBoard.getWidth()) {
 						if (node.currentState[i-1][j+1] == currentToken) {
 							score += x;
 							if (i-2 > 0 && j+2 < miniMaxBoard.getWidth()) {
@@ -419,10 +432,12 @@ public class MiniMax {
 						}
 					}
 				}
-			case 8: // diagonal down-right
-				if (i+2 < miniMaxBoard.getHeight() && j+2 < miniMaxBoard.getWidth()) {
-					if ((node.currentState[i+1][j+1] == oppToken && node.currentState[i+2][j+2] == ' ') || (node.currentState[i+1][j+1] == ' ' && node.currentState[i+2][j+2] == oppToken)) {
-						score += x;
+			}
+		case 8: // diagonal down-right
+			if (i+2 < miniMaxBoard.getHeight() && j+2 < miniMaxBoard.getWidth()) {
+				if ((node.currentState[i+1][j+1] == oppToken && node.currentState[i+2][j+2] == ' ') || (node.currentState[i+1][j+1] == ' ' && node.currentState[i+2][j+2] == oppToken)) {
+					score += x;
+					if (i-1 > 0 && j-1 > 0) {
 						if (node.currentState[i-1][j-1] == currentToken) {
 							score += x;
 							if (i-2 > 0 && j-2 > 0) {
@@ -434,6 +449,7 @@ public class MiniMax {
 					}
 				}
 			}
+		}
 		return score;
 	}
 
