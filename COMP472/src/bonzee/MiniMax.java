@@ -115,10 +115,10 @@ public class MiniMax {
 			for (int j = 0; j < miniMaxBoard.getWidth(); j++) {
 				char token = miniMaxBoard.getTokenAtPosition(i, j);
 				if(token != 'G' && token != 'R') {
-					break;
+					continue;
 				}
 				if (token != (isMAXPlayer ? 'G' : 'R')) {
-					break;
+					continue;
 				}
 
 				if (i == 0 && j == 0) {
@@ -229,9 +229,7 @@ public class MiniMax {
 	public void calculateScore(Node node) {
 		// Initializing random values
 		// TODO use real values
-		int x = 10;
-		int y = 5;
-		int z = 3;
+		int z = 100; // safe
 		double score = 0;
 		int safeScore = 0;
 		int gCtr = 0;
@@ -257,16 +255,16 @@ public class MiniMax {
 					greenScore += calculateAttackingScores(i,j,node,oppToken,token,3);
 					// Check for right
 					greenScore += calculateAttackingScores(i,j,node,oppToken,token,4);
-					//					if (miniMaxBoard.blackCell(j, i)) {
-					//						// Check diagonal up-left
-					//						greenScore += calculateAttackingScores(i,j,node,oppToken,token,5);
-					//						// Check diagonal up-right
-					//						greenScore += calculateAttackingScores(i,j,node,oppToken,token,6);
-					//						// Check diagonal down-left
-					//						greenScore += calculateAttackingScores(i,j,node,oppToken,token,7);
-					//						// Check diagonal down-right
-					//						greenScore += calculateAttackingScores(i,j,node,oppToken,token,8);
-					//					}
+					if (miniMaxBoard.blackCell(j, i)) {
+						// Check diagonal up-left
+						greenScore += calculateAttackingScores(i,j,node,oppToken,token,5);
+						// Check diagonal up-right
+						greenScore += calculateAttackingScores(i,j,node,oppToken,token,6);
+						// Check diagonal down-left
+						greenScore += calculateAttackingScores(i,j,node,oppToken,token,7);
+						// Check diagonal down-right
+						greenScore += calculateAttackingScores(i,j,node,oppToken,token,8);
+					}
 
 				} else if (token == 'R') {
 					rCtr++;
@@ -279,16 +277,16 @@ public class MiniMax {
 					redScore += calculateAttackingScores(i,j,node,oppToken,token,3);
 					// Check for right
 					redScore += calculateAttackingScores(i,j,node,oppToken,token,4);
-					//					if (miniMaxBoard.blackCell(j, i)) {
-					//						// Check diagonal up-left
-					//						redScore += calculateAttackingScores(i,j,node,oppToken,token,5);
-					//						// Check diagonal up-right
-					//						redScore += calculateAttackingScores(i,j,node,oppToken,token,6);
-					//						// Check diagonal down-left
-					//						redScore += calculateAttackingScores(i,j,node,oppToken,token,7);
-					//						// Check diagonal down-right
-					//						redScore += calculateAttackingScores(i,j,node,oppToken,token,8);
-					//					}
+					if (miniMaxBoard.blackCell(j, i)) {
+						// Check diagonal up-left
+						redScore += calculateAttackingScores(i,j,node,oppToken,token,5);
+						// Check diagonal up-right
+						redScore += calculateAttackingScores(i,j,node,oppToken,token,6);
+						// Check diagonal down-left
+						redScore += calculateAttackingScores(i,j,node,oppToken,token,7);
+						// Check diagonal down-right
+						redScore += calculateAttackingScores(i,j,node,oppToken,token,8);
+					}
 				}
 				else
 					break;
@@ -321,60 +319,122 @@ public class MiniMax {
 	 */
 	public int calculateAttackingScores(int i, int j, Node node, char oppToken, char currentToken, int code) {
 		int score = 0;
-		int x = 10;
-		switch(code) {
-		case 1: // up
-			if (i-2 > 0 && i+2 < miniMaxBoard.getHeight()) {
-				if ((node.currentState[i-1][j] == oppToken && node.currentState[i-2][j] == ' ') || (node.currentState[i-1][j] == ' ' && node.currentState[i-2][j] == oppToken)) {
-					score += x;
-					if (node.currentState[i+1][j] == currentToken) {
+		int x = 100;
+		if (i-2 > 0 && i+2 < miniMaxBoard.getHeight() && j-2 > 0 && j+2 < miniMaxBoard.getWidth()) {
+			switch(code) {
+			case 1: // up
+				if (i-2 > 0) {
+					if ((node.currentState[i-1][j] == oppToken && node.currentState[i-2][j] == ' ') || (node.currentState[i-1][j] == ' ' && node.currentState[i-2][j] == oppToken)) {
 						score += x;
-						if (node.currentState[i+2][j] == currentToken) {
+						if (node.currentState[i+1][j] == currentToken) {
 							score += x;
+							if (i+2 < miniMaxBoard.getHeight()) {
+								if (node.currentState[i+2][j] == currentToken) {
+									score += x;
+								}
+							}
+						}
+					}
+				}
+			case 2: // down
+				if (i+2 < miniMaxBoard.getHeight()) {
+					if ((node.currentState[i+1][j] == oppToken && node.currentState[i+2][j] == ' ') || ((node.currentState[i+1][j] == ' ' && node.currentState[i+2][j] == oppToken))) {
+						score += x;
+						if (node.currentState[i-1][j] == currentToken) {
+							score += x;
+							if (i-2 > 0) {
+								if (node.currentState[i-2][j] == currentToken) {
+									score += x;
+								}
+							}
+						}
+					}
+				}
+			case 3: // left
+				if (j-2 > 0) {
+					if ((node.currentState[i][j-1] == oppToken && node.currentState[i][j-2] == ' ') || (node.currentState[i][j-1] == ' ' && node.currentState[i][j-2] == oppToken)) {
+						score += x;
+						if (node.currentState[i][j+1] == currentToken) {
+							score += x;
+							if (j+2 < miniMaxBoard.getWidth()) {
+								if (node.currentState[i][j+2] == currentToken) {
+									score += x;
+								}
+							}
+						}
+					}
+				}
+			case 4: // right
+				if (j+2 < miniMaxBoard.getWidth()) {
+					if ((node.currentState[i][j+1] == oppToken && node.currentState[i][j+2] == ' ') || (node.currentState[i][j+1] == ' ' && node.currentState[i][j+2] == oppToken)) {
+						score += x;
+						if (node.currentState[i][j-1] == currentToken) {
+							score += x;
+							if (j-2 > 0) {
+								if (node.currentState[i][j-2] == currentToken) {
+									score += x;
+								}
+							}
+						}
+					}
+				}
+			case 5: // diagonal up-left
+				if (i-2 > 0 && j-2 > 0) {
+					if ((node.currentState[i-1][j-1] == oppToken && node.currentState[i-2][j-2] == ' ') || (node.currentState[i-1][j-1] == ' ' && node.currentState[i-2][j-2] == oppToken)) {
+						score += x;
+						if (node.currentState[i+1][j+1] == currentToken) {
+							score += x;
+							if (i+2 < miniMaxBoard.getHeight() && j+2 < miniMaxBoard.getWidth()) {
+								if (node.currentState[i+2][j+2] == currentToken) {
+									score += x;
+								}
+							}
+						}
+					}
+				}
+			case 6: // diagonal up-right
+				if (i-2 > 0 && j+2 < miniMaxBoard.getWidth()) {
+					if ((node.currentState[i-1][j+1] == oppToken && node.currentState[i-2][j+2] == ' ') || (node.currentState[i-1][j+1] == ' ' && node.currentState[i-2][j+2] == oppToken)) {
+						score += x;
+						if (node.currentState[i+1][j-1] == currentToken) {
+							score += x;
+							if (j-2 > 0 && i+2 < miniMaxBoard.getHeight()) {
+								if (node.currentState[i+2][j-2] == currentToken) {
+									score += x;
+								}
+							}
+						}
+					}
+				}
+			case 7: // diagonal down-left
+				if (j-2 > 0 && i+2 < miniMaxBoard.getHeight()) {
+					if ((node.currentState[i+1][j-1] == oppToken && node.currentState[i+2][j-2] == ' ') || (node.currentState[i+1][j-1] == ' ' && node.currentState[i+2][j-2] == oppToken)) {
+						score += x;
+						if (node.currentState[i-1][j+1] == currentToken) {
+							score += x;
+							if (i-2 > 0 && j+2 < miniMaxBoard.getWidth()) {
+								if (node.currentState[i-2][j+2] == currentToken) {
+									score += x;
+								}
+							}
+						}
+					}
+				}
+			case 8: // diagonal down-right
+				if (i+2 < miniMaxBoard.getHeight() && j+2 < miniMaxBoard.getWidth()) {
+					if ((node.currentState[i+1][j+1] == oppToken && node.currentState[i+2][j+2] == ' ') || (node.currentState[i+1][j+1] == ' ' && node.currentState[i+2][j+2] == oppToken)) {
+						score += x;
+						if (node.currentState[i-1][j-1] == currentToken) {
+							score += x;
+							if (i-2 > 0 && j-2 > 0) {
+								if (node.currentState[i-2][j-2] == currentToken) {
+									score += x;
+								}
+							}
 						}
 					}
 				}
 			}
-		case 2: // down
-			if (i-2 > 0 && i+2 < miniMaxBoard.getHeight()) {
-				if ((node.currentState[i+1][j] == oppToken && node.currentState[i+2][j] == ' ') || ((node.currentState[i+1][j] == ' ' && node.currentState[i+2][j] == oppToken))) {
-					score += x;
-					if (node.currentState[i-1][j] == currentToken) {
-						score += x;
-						if (node.currentState[i-2][j] == currentToken) {
-							score += x;
-						}
-					}
-				}
-			}
-		case 3: // left
-			if (j-2 > 0 && j+2 < miniMaxBoard.getWidth()) {
-				if ((node.currentState[i][j-1] == oppToken && node.currentState[i][j-2] == ' ') || (node.currentState[i][j-1] == ' ' && node.currentState[i][j-2] == oppToken)) {
-					score += x;
-					if (node.currentState[i][j+1] == currentToken) {
-						score += x;
-						if (node.currentState[i][j+2] == currentToken) {
-							score += x;
-						}
-					}
-				}
-			}
-		case 4: // right
-			if (j-2 > 0 && j+2 < miniMaxBoard.getWidth()) {
-				if ((node.currentState[i][j+1] == oppToken && node.currentState[i][j+2] == ' ') || (node.currentState[i][j+1] == ' ' && node.currentState[i][j+2] == oppToken)) {
-					score += x;
-					if (node.currentState[i][j-1] == currentToken) {
-						score += x;
-						if (node.currentState[i][j-2] == currentToken) {
-							score += x;
-						}
-					}
-				}
-			}
-			//		case 5: // diagonal up-left
-			//		case 6: // diagonal up-right
-			//		case 7: // diagonal down-left
-			//		case 8: // diagonal down-right
 		}
 		return score;
 	}
