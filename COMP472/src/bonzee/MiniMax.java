@@ -234,8 +234,8 @@ public class MiniMax {
 		int safeScore = 0;
 		int gCtr = 0;
 		int rCtr = 0;
-		int greenScore = 0;
-		int redScore = 0;
+		int totalGreenScore = 0;
+		int totalRedScore = 0;
 
 		// Look for all G/R tokens through the board
 		for(int i = 0; i < node.currentState.length; i++) {
@@ -243,7 +243,8 @@ public class MiniMax {
 				boolean safe = true;
 				char token = node.currentState[i][j];
 				char oppToken;
-
+				int greenScore = 0;
+				int redScore = 0;
 				if(token == 'G') {
 					gCtr++;
 					oppToken = 'R';
@@ -264,6 +265,11 @@ public class MiniMax {
 						greenScore += calculateAttackingScores(i,j,node,oppToken,token,7);
 						// Check diagonal down-right
 						greenScore += calculateAttackingScores(i,j,node,oppToken,token,8);
+					}
+					// Add to the total green score
+					totalGreenScore += greenScore;
+					if (greenScore == 0) {
+						safeScore += z;
 					}
 
 				} else if (token == 'R') {
@@ -287,23 +293,18 @@ public class MiniMax {
 						// Check diagonal down-right
 						redScore += calculateAttackingScores(i,j,node,oppToken,token,8);
 					}
-				}
-				else
-					continue;
-
-
-				if (safe) {
-					if (node.currentState[i][j] == 'G') {
-						safeScore += z;
-					}
-					else {
+					// Add to the total red score
+					totalRedScore += redScore;
+					if (redScore == 0) {
 						safeScore -= z;
 					}
-
+				}
+				else {
+					continue;
 				}
 			}
 		}
-		score = 0.4*(safeScore) + 0.2*(gCtr - rCtr) + 0.4*(greenScore - redScore);
+		score = 0.4*(safeScore) + 0.2*(gCtr - rCtr) + 0.4*(totalGreenScore - totalRedScore);
 		node.setScore((int)score);
 	}
 
