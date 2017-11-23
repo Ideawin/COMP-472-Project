@@ -289,7 +289,7 @@ public class MiniMax {
 					}
 				}
 				else
-					break;
+					continue;
 
 
 				if (safe) {
