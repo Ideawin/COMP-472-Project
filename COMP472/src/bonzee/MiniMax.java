@@ -320,7 +320,6 @@ public class MiniMax {
 	public int calculateAttackingScores(int i, int j, Node node, char oppToken, char currentToken, int code) {
 		int score = 0;
 		int x = 100;
-		if (i-2 > 0 && i+2 < miniMaxBoard.getHeight() && j-2 > 0 && j+2 < miniMaxBoard.getWidth()) {
 			switch(code) {
 			case 1: // up
 				if (i-2 > 0) {
@@ -435,7 +434,6 @@ public class MiniMax {
 					}
 				}
 			}
-		}
 		return score;
 	}
 
