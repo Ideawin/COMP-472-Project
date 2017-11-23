@@ -249,33 +249,6 @@ public class MiniMax {
 					gCtr += y;
 					oppToken = 'R';
 					// Check for up
-					greenScore += calculateAttackingScores(i,j,node,oppToken,token,1);
-					// Check for down
-					greenScore += calculateAttackingScores(i,j,node,oppToken,token,2);
-					// Check for left
-					greenScore += calculateAttackingScores(i,j,node,oppToken,token,3);
-					// Check for right
-					greenScore += calculateAttackingScores(i,j,node,oppToken,token,4);
-					if (miniMaxBoard.blackCell(j, i)) {
-						// Check diagonal up-left
-						greenScore += calculateAttackingScores(i,j,node,oppToken,token,5);
-						// Check diagonal up-right
-						greenScore += calculateAttackingScores(i,j,node,oppToken,token,6);
-						// Check diagonal down-left
-						greenScore += calculateAttackingScores(i,j,node,oppToken,token,7);
-						// Check diagonal down-right
-						greenScore += calculateAttackingScores(i,j,node,oppToken,token,8);
-					}
-					// Add to the total green score
-					totalGreenScore += greenScore;
-					if (greenScore == 0) {
-						safeScore += z;
-					}
-
-				} else if (token == 'R') {
-					rCtr += y;
-					oppToken = 'G';
-					// Check for up
 					redScore += calculateAttackingScores(i,j,node,oppToken,token,1);
 					// Check for down
 					redScore += calculateAttackingScores(i,j,node,oppToken,token,2);
@@ -293,9 +266,36 @@ public class MiniMax {
 						// Check diagonal down-right
 						redScore += calculateAttackingScores(i,j,node,oppToken,token,8);
 					}
-					// Add to the total red score
+					// Add to the total green score
 					totalRedScore += redScore;
 					if (redScore == 0) {
+						safeScore += z;
+					}
+
+				} else if (token == 'R') {
+					rCtr += y;
+					oppToken = 'G';
+					// Check for up
+					greenScore += calculateAttackingScores(i,j,node,oppToken,token,1);
+					// Check for down
+					greenScore += calculateAttackingScores(i,j,node,oppToken,token,2);
+					// Check for left
+					greenScore += calculateAttackingScores(i,j,node,oppToken,token,3);
+					// Check for right
+					greenScore += calculateAttackingScores(i,j,node,oppToken,token,4);
+					if (miniMaxBoard.blackCell(j, i)) {
+						// Check diagonal up-left
+						greenScore += calculateAttackingScores(i,j,node,oppToken,token,5);
+						// Check diagonal up-right
+						greenScore += calculateAttackingScores(i,j,node,oppToken,token,6);
+						// Check diagonal down-left
+						greenScore += calculateAttackingScores(i,j,node,oppToken,token,7);
+						// Check diagonal down-right
+						greenScore += calculateAttackingScores(i,j,node,oppToken,token,8);
+					}
+					// Add to the total red score
+					totalGreenScore += greenScore;
+					if (greenScore == 0) {
 						safeScore -= z;
 					}
 				}
@@ -304,7 +304,8 @@ public class MiniMax {
 				}
 			}
 		}
-		score = 0.2*(safeScore) + 0.4*(gCtr - rCtr) + 0.4*(totalGreenScore - totalRedScore);
+		
+		score = 0.25*(safeScore) + 0.35*(gCtr - rCtr) + 0.4*(totalGreenScore - totalRedScore);
 		node.setScore((int)score);
 	}
 
@@ -331,8 +332,10 @@ public class MiniMax {
 					ctr = 1;
 					while (i+ctr < miniMaxBoard.getHeight()) {
 						if (node.currentState[i+ctr][j] == currentToken) {
-							score += x*(ctr+1);
+							score += x^ctr;
 						}
+						else
+							break;
 						ctr++;
 					}
 				}
@@ -345,8 +348,10 @@ public class MiniMax {
 					ctr = 1;
 					while (i-ctr > 0) {
 						if (node.currentState[i-ctr][j] == currentToken) {
-							score += x*(ctr+1);
+							score += x^ctr;
 						}
+						else
+							break;
 						ctr++;
 					}
 				}
@@ -359,8 +364,10 @@ public class MiniMax {
 					ctr = 1;
 					while (j+ctr < miniMaxBoard.getWidth()) {
 						if (node.currentState[i][j+ctr] == currentToken) {
-							score += x*(ctr+1);
+							score += x^ctr;
 						}
+						else
+							break;
 						ctr++;
 					}
 				}
@@ -373,8 +380,10 @@ public class MiniMax {
 					ctr = 1;
 					while (j-ctr > 0) {
 						if (node.currentState[i][j-ctr] == currentToken) {
-							score += x*(ctr+1);
+							score += x^ctr;
 						}
+						else
+							break;
 						ctr++;
 					}
 				}
@@ -387,8 +396,10 @@ public class MiniMax {
 					ctr = 1;
 					while (i+ctr < miniMaxBoard.getHeight() && j+ctr < miniMaxBoard.getWidth()) {
 						if (node.currentState[i+ctr][j+ctr] == currentToken) {
-							score += x*(ctr+1);
+							score += x^ctr;
 						}
+						else
+							break;
 						ctr++;
 					}
 				}
@@ -401,8 +412,10 @@ public class MiniMax {
 					ctr = 1;
 					while (i+ctr < miniMaxBoard.getHeight() && j-ctr > 0) {
 						if (node.currentState[i+ctr][j-ctr] == currentToken) {
-							score += x*(ctr+1);
+							score += x^ctr;
 						}
+						else
+							break;
 						ctr++;
 					}
 				}
@@ -415,8 +428,10 @@ public class MiniMax {
 					ctr = 1;
 					while (i-ctr > 0 && j+ctr < miniMaxBoard.getWidth()) {
 						if (node.currentState[i-ctr][j+ctr] == currentToken) {
-							score += x*(ctr+1);
+							score += x^ctr;
 						}
+						else
+							break;
 						ctr++;
 					}
 				}
@@ -429,8 +444,10 @@ public class MiniMax {
 					ctr = 1;
 					while (i-ctr > 0 && j-ctr > 0) {
 						if (node.currentState[i-ctr][j-ctr] == currentToken) {
-							score += x*(ctr+1);
+							score += x^ctr;
 						}
+						else
+							break;
 						ctr++;
 					}
 				}
