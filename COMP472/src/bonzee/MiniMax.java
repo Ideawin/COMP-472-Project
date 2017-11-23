@@ -303,7 +303,7 @@ public class MiniMax {
 				}
 			}
 		}
-		score = 0.5*(safeScore) + 0.2*(gCtr - rCtr) + 0.15*(greenScore - redScore);
+		score = 0.4*(safeScore) + 0.2*(gCtr - rCtr) + 0.4*(greenScore - redScore);
 		node.setScore((int)score);
 	}
 
