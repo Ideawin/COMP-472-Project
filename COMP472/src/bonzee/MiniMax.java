@@ -13,7 +13,7 @@ public class MiniMax {
 	public MiniMax() {
 		miniMaxBoard = new Board();
 	}
-	
+
 	/**
 	 * First method to call when it is the AI player's turn
 	 * @param maxLevelLookout the max look-ahead level
@@ -37,7 +37,7 @@ public class MiniMax {
 	public void makeTree(Node parentNode) {
 		boolean isMAXPlayer = !parentNode.isMAX(); // Used to set whether the child will be MAX/MIN
 		List<String> nextMoves = computeNextMoves(parentNode); // Get the next possible moves
-		
+
 		// Iterate through each possible moves and create a node for each, adding them as children to the parent node
 		// If maxLevelLookout hasn't reached 0, then the tree can have an additional level
 		for (String move : nextMoves) {
@@ -86,7 +86,7 @@ public class MiniMax {
 		Node bestNode = findBestNode(isMAXPlayer, children, this.maxLevelLookout - node.getMaxLevelLookout()); // Find the best move among the children
 		node.setScore(bestNode.getScore());
 		node.setNextBestMove(bestNode.getTokenMove());
-		
+
 		// Display the move the AI chose and the scores of first level only
 		if (node.equals(tree.getRoot())) {
 			System.out.println("==> AI chose move [" + bestNode.getTokenMove() + "] with a score of [" + bestNode.getScore() + "]");
@@ -107,20 +107,20 @@ public class MiniMax {
 	public List<String> computeNextMoves(Node parentNode) {
 		// Maybe make use of attribute currentBoardState?
 		List<String> list = new ArrayList<>();
-		
+
 		miniMaxBoard.setBoardArr(parentNode.getCurrentState());
 		Boolean isMAXPlayer = parentNode.isMAX();
 		boolean isValid;
 		for (int i = 0; i < miniMaxBoard.getHeight(); i++) {
 			for (int j = 0; j < miniMaxBoard.getWidth(); j++) {
-    	    	char token = miniMaxBoard.getTokenAtPosition(i, j);
-    			if(token != 'G' && token != 'R') {
-    				break;
-    			}
-    			if (token != (isMAXPlayer ? 'G' : 'R')) {
-    				break;
-    			}
-    			
+				char token = miniMaxBoard.getTokenAtPosition(i, j);
+				if(token != 'G' && token != 'R') {
+					break;
+				}
+				if (token != (isMAXPlayer ? 'G' : 'R')) {
+					break;
+				}
+
 				if (i == 0 && j == 0) {
 					isValid = miniMaxBoard.moveToken(i, j, i, (j+1), isMAXPlayer ? 'G' : 'R',true,true); // right
 					if (isValid) list.add((char)(i+'A') + "" + (j+1) + "," + (char)(i+'A') + "" + (j+2));
@@ -222,62 +222,161 @@ public class MiniMax {
 		return list;
 	}
 
-    /**
-     * Method to calculate score of a node
-     * @param node one of the child node
-     */
-    public void calculateScore(Node node) {
-    	// Initializing random values
-    	// TODO use real values
-    	int x = 10;
-    	int y = 5;
-    	int z = 3;
-    	double score = 0;
-    	int safeScore = 0;
-    	int gCtr = 0;
-    	int rCtr = 0;
-    	int defendOrAttackScore = 0;
-    	
-    	// Look for all G/R tokens through the board
-    	for(int i = 0; i < node.currentState.length; i++) {
-    		for(int j = 0; j < node.currentState[i].length; j++ ) {
-    	    	boolean safe = true;
-    	    	char token = node.currentState[i][j];
-    			if(token == 'G') {
-    				gCtr++;
+	/**
+	 * Method to calculate score of a node
+	 * @param node one of the child node
+	 */
+	public void calculateScore(Node node) {
+		// Initializing random values
+		// TODO use real values
+		int x = 10;
+		int y = 5;
+		int z = 3;
+		double score = 0;
+		int safeScore = 0;
+		int gCtr = 0;
+		int rCtr = 0;
+		int greenScore = 0;
+		int redScore = 0;
 
-    			} else if (token == 'R') {
-    				rCtr++;
-    			}
-    			else
-    				break;
-    			
-    			// Check for up
-    			
-    			// Check for down
-    			// Check for left
-    			// Check for right
-    			if (miniMaxBoard.blackCell(j, i)) {
-    				// Check diagonal up-left
-    				// Check diagonal up-right
-    				// Check diagonal down-left
-    				// Check diagonal down-right
-    			}
-    			
-        		if (safe) {
-        			if (node.currentState[i][j] == 'G') {
-        				safeScore += z;
-        			}
-        			else {
-        				safeScore -= z;
-        			}
-        				
-        		}
-    		}
-    	}
-    	score = 0.5*(safeScore) + 0.2*(gCtr - rCtr) + 0.15*(defendOrAttackScore);
-    	node.setScore((int)score);
-    }
+		// Look for all G/R tokens through the board
+		for(int i = 0; i < node.currentState.length; i++) {
+			for(int j = 0; j < node.currentState[i].length; j++ ) {
+				boolean safe = true;
+				char token = node.currentState[i][j];
+				char oppToken;
+				if(token == 'G') {
+					gCtr++;
+					oppToken = 'R';
+					// Check for up
+					greenScore += calculateAttackingScores(i,j,node,oppToken,token, 1);
+					// Check for down
+					greenScore += calculateAttackingScores(i,j,node,oppToken,token, 2);
+					// Check for left
+					greenScore += calculateAttackingScores(i,j,node,oppToken,token, 3);
+					// Check for right
+					greenScore += calculateAttackingScores(i,j,node,oppToken,token, 4);
+//					if (miniMaxBoard.blackCell(j, i)) {
+//						// Check diagonal up-left
+//						greenScore += calculateAttackingScores(i,j,node,oppToken,token,5);
+//						// Check diagonal up-right
+//						greenScore += calculateAttackingScores(i,j,node,oppToken,token,6);
+//						// Check diagonal down-left
+//						greenScore += calculateAttackingScores(i,j,node,oppToken,token,7);
+//						// Check diagonal down-right
+//						greenScore += calculateAttackingScores(i,j,node,oppToken,token,8);
+//					}
+
+				} else if (token == 'R') {
+					rCtr++;
+					oppToken = 'G';
+					// Check for up
+					redScore += calculateAttackingScores(i,j,node,oppToken,token, 1);
+					// Check for down
+					redScore += calculateAttackingScores(i,j,node,oppToken,token, 2);
+					// Check for left
+					redScore += calculatAttackingScores(i,j,node,oppToken,token,3);
+					// Check for right
+					redScore += calculateAttackingScores(i,j,node,oppToken,token, 4);
+//					if (miniMaxBoard.blackCell(j, i)) {
+//						// Check diagonal up-left
+//						redScore += calculateAttackingScores(i,j,node,oppToken,token,5);
+//						// Check diagonal up-right
+//						redScore += calculateAttackingScores(i,j,node,oppToken,token,6);
+//						// Check diagonal down-left
+//						redScore += calculateAttackingScores(i,j,node,oppToken,token,7);
+//						// Check diagonal down-right
+//						redScore += calculateAttackingScores(i,j,node,oppToken,token,8);
+//					}
+				}
+				else
+					break;
+
+
+				if (safe) {
+					if (node.currentState[i][j] == 'G') {
+						safeScore += z;
+					}
+					else {
+						safeScore -= z;
+					}
+
+				}
+			}
+		}
+		score = 0.5*(safeScore) + 0.2*(gCtr - rCtr) + 0.15*(greenScore - redScore);
+		node.setScore((int)score);
+	}
+
+	/**
+	 * Method to calculate the score for number of tokens killed
+	 * @param i
+	 * @param j
+	 * @param node
+	 * @param oppToken
+	 * @param currentToken TODO
+	 * @param code
+	 * @return
+	 */
+	public int calculateAttackingScores(int i, int j, Node node, char oppToken, char currentToken, int code) {
+		int score = 0;
+		int x = 10;
+		switch(code) {
+		case 1: // up
+			if (i-2 > 0) {
+				if ((node.currentState[i-1][j] == oppToken && node.currentState[i-2][j] == ' ') || (node.currentState[i-1][j] == ' ' && node.currentState[i-2][j] == oppToken)) {
+					score += x;
+					if (node.currentState[i+1][j] == currentToken) {
+						score += x;
+						if (node.currentState[i+2][j] == currentToken) {
+							score += x;
+						}
+					}
+				}
+			}
+		case 2: // down
+			if (i+2 < miniMaxBoard.getHeight()) {
+				if ((node.currentState[i+1][j] == oppToken && node.currentState[i+2][j] == ' ') || ((node.currentState[i+1][j] == ' ' && node.currentState[i+2][j] == oppToken))) {
+					score += x;
+					if (node.currentState[i-1][j] == currentToken) {
+						score += x;
+						if (node.currentState[i-2][j] == currentToken) {
+							score += x;
+						}
+					}
+				}
+			}
+		case 3: // left
+			if (j-2 > 0) {
+				if ((node.currentState[i][j-1] == oppToken && node.currentState[i][j-2] == ' ') || (node.currentState[i][j-1] == ' ' && node.currentState[i][j-2] == oppToken)) {
+					score += x;
+					if (node.currentState[i][j+1] == currentToken) {
+						score += x;
+						if (node.currentState[i][j+2] == currentToken) {
+							score += x;
+						}
+					}
+				}
+			}
+		case 4: // right
+			if (j-2 < miniMaxBoard.getWidth()) {
+				if ((node.currentState[i][j+1] == oppToken && node.currentState[i][j+2] == ' ') || (node.currentState[i][j+1] == ' ' && node.currentState[i][j+2] == oppToken)) {
+					score += x;
+					if (node.currentState[i][j-1] == currentToken) {
+						score += x;
+						if (node.currentState[i][j-2] == currentToken) {
+							score += x;
+						}
+					}
+				}
+			}
+		case 5: // diagonal up-left
+		case 6: // diagonal up-right
+		case 7: // diagonal down-left
+		case 8: // diagonal down-right
+		}
+		return score;
+	}
 
 	/**
 	 * Method to find the best next move
@@ -286,17 +385,17 @@ public class MiniMax {
 	 * @param currentLevel current look-ahead level
 	 * @return the best node
 	 */
-    public Node findBestNode(boolean isMAX, List<Node> children, int currentLevel) {
+	public Node findBestNode(boolean isMAX, List<Node> children, int currentLevel) {
 		// Iterate through children and select the appropriate node
-    	    	
-    	// Node to store the highest score 
-    	Node highestScoreNode = null;
-    	
-    	// Checking Null list
+
+		// Node to store the highest score 
+		Node highestScoreNode = null;
+
+		// Checking Null list
 		if(children == null) {
 			return null;
 		}
-    	
+
 		if (isMAX) {
 			for (Node n : children) {
 				// Comparing
@@ -323,7 +422,7 @@ public class MiniMax {
 		}
 		return highestScoreNode;
 	}
-	
+
 	/**
 	 * Method to get the MiniMax board
 	 * @return
@@ -333,4 +432,3 @@ public class MiniMax {
 	}
 }
 
-    
