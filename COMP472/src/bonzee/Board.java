@@ -7,7 +7,7 @@ public class Board {
 
 	public static final int WIDTH = 9;
 	public static final int HEIGHT = 5;
-	public static final int MINIMAX_MAX_LEVEL_LOOKUP = 4;
+	public static final int MINIMAX_MAX_LEVEL_LOOKUP = 3;
 	final int DEFAULT_MAX_CONSECUTIVE_PASSIVE_MOVE = 10;
 	final int MAX_NUMBER_OF_TOKENS_PER_PLAYER = 22;
 
