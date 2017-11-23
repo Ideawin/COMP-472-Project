@@ -229,7 +229,7 @@ public class MiniMax {
 	public void calculateScore(Node node) {
 		// Initializing random values
 		// TODO use real values
-		int y = 10; // for number of tokens left
+		int y = 100; // for number of tokens left
 		int z = 100; // safe
 		double score = 0;
 		int safeScore = 0;
@@ -321,7 +321,7 @@ public class MiniMax {
 	public int calculateAttackingScores(int i, int j, Node node, char oppToken, char currentToken, int code) {
 		int ctr = 1;
 		int score = 0;
-		int x = 100;
+		int x = 50;
 
 		switch(code) {
 		case 1: // up
@@ -331,7 +331,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i+ctr < miniMaxBoard.getHeight()) {
 						if (node.currentState[i+ctr][j] == currentToken) {
-							score += x;
+							score += x*(ctr+1);
 						}
 						ctr++;
 					}
@@ -345,7 +345,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i-ctr > 0) {
 						if (node.currentState[i-ctr][j] == currentToken) {
-							score += x;
+							score += x*(ctr+1);
 						}
 						ctr++;
 					}
@@ -359,7 +359,7 @@ public class MiniMax {
 					ctr = 1;
 					while (j+ctr < miniMaxBoard.getWidth()) {
 						if (node.currentState[i][j+ctr] == currentToken) {
-							score += x;
+							score += x*(ctr+1);
 						}
 						ctr++;
 					}
@@ -373,7 +373,7 @@ public class MiniMax {
 					ctr = 1;
 					while (j-ctr > 0) {
 						if (node.currentState[i][j-ctr] == currentToken) {
-							score += x;
+							score += x*(ctr+1);
 						}
 						ctr++;
 					}
@@ -387,7 +387,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i+ctr < miniMaxBoard.getHeight() && j+ctr < miniMaxBoard.getWidth()) {
 						if (node.currentState[i+ctr][j+ctr] == currentToken) {
-							score += x;
+							score += x*(ctr+1);
 						}
 						ctr++;
 					}
@@ -401,7 +401,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i+ctr < miniMaxBoard.getHeight() && j-ctr > 0) {
 						if (node.currentState[i+ctr][j-ctr] == currentToken) {
-							score += x;
+							score += x*(ctr+1);
 						}
 						ctr++;
 					}
@@ -415,7 +415,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i-ctr > 0 && j+ctr < miniMaxBoard.getWidth()) {
 						if (node.currentState[i-ctr][j+ctr] == currentToken) {
-							score += x;
+							score += x*(ctr+1);
 						}
 						ctr++;
 					}
@@ -429,7 +429,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i-ctr > 0 && j-ctr > 0) {
 						if (node.currentState[i-ctr][j-ctr] == currentToken) {
-							score += x;
+							score += x*(ctr+1);
 						}
 						ctr++;
 					}
