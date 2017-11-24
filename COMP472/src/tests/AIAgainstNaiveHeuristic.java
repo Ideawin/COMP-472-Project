@@ -5,7 +5,7 @@ import naive.NaiveBoard;
 
 public class AIAgainstNaiveHeuristic {
 	
-	public static final boolean IS_NAIVE_GREEN = false;
+	public static final boolean IS_NAIVE_GREEN = true;
 	
 	public static void main (String [] args) {
 		// Make a NaiveBoard and a real board
@@ -18,7 +18,7 @@ public class AIAgainstNaiveHeuristic {
 		
 		// Play AI vs AI
 		String move = "";
-		while(!isFinal(naiveBoard) && !isFinal(board)) {
+		while(!isFinal(naiveBoard) && !isFinal(board) && !checkIfConsecutiveDefensiveMoveReached(naiveBoard) && !checkIfConsecutiveDefensiveMoveReached(board)) {
 			if(isNaiveTurn) {
 				move = naiveBoard.playAI(IS_NAIVE_GREEN);
 				System.out.println("Naive Move: " + move);
@@ -83,4 +83,27 @@ public class AIAgainstNaiveHeuristic {
 		return(isFinal);
 	}
 	
+	/**
+	 * Check if the max consecutive defensive moves have been reached
+	 * @return true if it is reached, false otherwise
+	 */
+	public static boolean checkIfConsecutiveDefensiveMoveReached(Board bonzeeBoard) {
+		if (bonzeeBoard.getMaxConsecutiveMoves() == 0) {
+			System.out.println("10 non-attacking consecutive moves have been made. The game is DRAW.");
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Check if the max consecutive defensive moves have been reached
+	 * @return true if it is reached, false otherwise
+	 */
+	public static boolean checkIfConsecutiveDefensiveMoveReached(NaiveBoard bonzeeBoard) {
+		if (bonzeeBoard.getMaxConsecutiveMoves() == 0) {
+			System.out.println("10 non-attacking consecutive moves have been made. The game is DRAW.");
+			return true;
+		}
+		return false;
+	}
 }
