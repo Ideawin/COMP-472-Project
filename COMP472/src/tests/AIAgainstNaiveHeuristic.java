@@ -5,37 +5,51 @@ import naive.NaiveBoard;
 
 public class AIAgainstNaiveHeuristic {
 	
-	public static final boolean IS_NAIVE_GREEN = true;
-	
 	public static void main (String [] args) {
+		// Play Naive green
+		String naiveGreenOutcome = "Naive is green outcome: " + play(true);
+		// Play Naive red
+		String naiveRedOutcome = "Naive is red outcome: " + play(false);
+		
+		System.out.println(naiveGreenOutcome);
+		System.out.println(naiveRedOutcome);
+	}
+	
+	/**
+	 * Play
+	 * @param isNaiveGreen
+	 * @return Outcome
+	 */
+	private static String play(final boolean isNaiveGreen) {
+		
 		// Make a NaiveBoard and a real board
 		NaiveBoard naiveBoard = new NaiveBoard();
 		Board board = new Board();
 		
 		
 		// Setup the turn
-		boolean isNaiveTurn = IS_NAIVE_GREEN;
+		boolean isNaiveTurn = isNaiveGreen;
 		
 		// Play AI vs AI
 		String move = "";
 		while(!isFinal(naiveBoard) && !isFinal(board) && !checkIfConsecutiveDefensiveMoveReached(naiveBoard) && !checkIfConsecutiveDefensiveMoveReached(board)) {
 			if(isNaiveTurn) {
-				move = naiveBoard.playAI(IS_NAIVE_GREEN);
+				move = naiveBoard.playAI(isNaiveGreen);
 				System.out.println("Naive Move: " + move);
 				int oldYPos  = move.charAt(0) - 'A';
 				int oldXPos = move.charAt(1) - '0' - 1;
 				int newYPos = move.charAt(3) - 'A';
 				int newXPos = move.charAt(4) - '0' - 1;
-				board.moveToken(oldYPos, oldXPos, newYPos, newXPos, IS_NAIVE_GREEN ? 'G' : 'R', false, false);
+				board.moveToken(oldYPos, oldXPos, newYPos, newXPos, isNaiveGreen ? 'G' : 'R', false, false);
 				isNaiveTurn = false;
 			} else {
-				move = board.playAI(!IS_NAIVE_GREEN);
+				move = board.playAI(!isNaiveGreen);
 				System.out.println("AI Move: " + move);
 				int oldYPos  = move.charAt(0) - 'A';
 				int oldXPos = move.charAt(1) - '0' - 1;
 				int newYPos = move.charAt(3) - 'A';
 				int newXPos = move.charAt(4) - '0' - 1;
-				naiveBoard.moveToken(oldYPos, oldXPos, newYPos, newXPos, IS_NAIVE_GREEN ? 'R' : 'G', false, false);
+				naiveBoard.moveToken(oldYPos, oldXPos, newYPos, newXPos, isNaiveGreen ? 'R' : 'G', false, false);
 				isNaiveTurn = true;
 			}
 		}
@@ -43,10 +57,15 @@ public class AIAgainstNaiveHeuristic {
 		// Display report
 		int numberGreen = naiveBoard.getnumG();
 		int numberRed = naiveBoard.getnumR();
-		System.out.println("NAIVE: " + (IS_NAIVE_GREEN ? numberGreen : numberRed) + " | AI: " + (IS_NAIVE_GREEN ? numberRed : numberGreen));;
 		
+		String outcome = "NAIVE: " + (isNaiveGreen ? numberGreen : numberRed) + " | AI: " + (isNaiveGreen ? numberRed : numberGreen);
+		
+		if(checkIfConsecutiveDefensiveMoveReached(naiveBoard) && checkIfConsecutiveDefensiveMoveReached(board)) {
+			outcome += " [DRAW]";
+		}
+		return outcome;
 	}
-	
+
 	/**
 	 * Method to check if game is over
 	 * @return
