@@ -229,17 +229,14 @@ public class MiniMax {
 	public void calculateScore(Node node) {
 		// Initializing random values
 		// TODO use real values
-		int y = 10; // for number of tokens left
-		int z = 100; // safe
+		int y = 100; // for number of tokens left
+		//int z = 100; // safe
 		double score = 0;
-		int safeScore = 0;
+		//int safeScore = 0;
 		int gCtr = 0;
 		int rCtr = 0;
 		int totalGreenScore = 0;
 		int totalRedScore = 0;
-		int yDistanceScore = 0;
-		int xDistanceScore = 0;
-		
 		// Look for all G/R tokens through the board
 		for(int i = 0; i < node.currentState.length; i++) {
 			for(int j = 0; j < node.currentState[i].length; j++ ) {
@@ -270,9 +267,9 @@ public class MiniMax {
 					}
 					// Add to the total green score
 					totalGreenScore += greenScore;
-					if (greenScore == 0) {
-						safeScore += z;
-					}
+//					if (greenScore == 0) {
+//						safeScore += z;
+//					}
 
 				} else if (token == 'R') {
 					rCtr += y;
@@ -297,19 +294,28 @@ public class MiniMax {
 					}
 					// Add to the total red score
 					totalRedScore += redScore;
-					if (redScore == 0) {
-						safeScore -= z;
-					}
+//					if (redScore == 0) {
+//						safeScore -= z;
+//					}
 				}
 				else {
 					continue;
 				}
 			}
 		}
-
-		score = 0.25*(safeScore) + 0.35*(gCtr - rCtr) + 0.4*(totalGreenScore - totalRedScore);
-
-		node.setScore((int)score);
+		
+		if (rCtr == 0) {
+			score = Double.MAX_VALUE;
+			node.setScore((int)score);
+		}
+		else if (gCtr == 0) {
+			score = Double.MIN_VALUE;
+			node.setScore((int)score);
+		}
+		else  {
+			score = 0.5*(gCtr - rCtr) + 0.5*(totalGreenScore - totalRedScore);
+			node.setScore((int)score);
+		}
 	}
 
 	/**
@@ -336,7 +342,7 @@ public class MiniMax {
 					// Check consecutive tokens that can be killed
 					while (i-ctr > 0) {
 						if (node.currentState[i-ctr][j] == oppToken) {
-							score += x^ctr;
+							score += (x^ctr);
 						}
 						else
 							break;
@@ -351,7 +357,7 @@ public class MiniMax {
 					// Check consecutive tokens that can be killed
 					while (i-ctr > 0) {
 						if (node.currentState[i-ctr][j] == oppToken) {
-							score += x^ctr;
+							score += (x^ctr);
 						}
 						else
 							break;
@@ -368,7 +374,7 @@ public class MiniMax {
 					// Check consecutive tokens that can be killed
 					while (i+ctr < miniMaxBoard.getHeight()) {
 						if (node.currentState[i+ctr][j] == currentToken) {
-							score += x^ctr;
+							score += (x^ctr);
 						}
 						else
 							break;
@@ -383,7 +389,7 @@ public class MiniMax {
 					// Check consecutive tokens that can be killed
 					while (i+ctr < miniMaxBoard.getHeight()) {
 						if (node.currentState[i+ctr][j] == currentToken) {
-							score += x^ctr;
+							score += (x^ctr);
 						}
 						else
 							break;
@@ -399,7 +405,7 @@ public class MiniMax {
 					ctr = 1;
 					while (j-ctr > 0) {
 						if (node.currentState[i][j-ctr] == currentToken) {
-							score += x^ctr;
+							score += (x^ctr);
 						}
 						else
 							break;
@@ -413,7 +419,7 @@ public class MiniMax {
 					ctr = 1;
 					while (j-ctr > 0) {
 						if (node.currentState[i][j-ctr] == currentToken) {
-							score += x^ctr;
+							score += (x^ctr);
 						}
 						else
 							break;
@@ -429,7 +435,7 @@ public class MiniMax {
 					ctr = 1;
 					while (j+ctr < miniMaxBoard.getWidth()) {
 						if (node.currentState[i][j+ctr] == currentToken) {
-							score += x^ctr;
+							score += (x^ctr);
 						}
 						else
 							break;
@@ -443,7 +449,7 @@ public class MiniMax {
 					ctr = 1;
 					while (j+ctr < miniMaxBoard.getWidth()) {
 						if (node.currentState[i][j+ctr] == currentToken) {
-							score += x^ctr;
+							score += (x^ctr);
 						}
 						else
 							break;
@@ -459,7 +465,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i-ctr > 0 && j-ctr > 0) {
 						if (node.currentState[i-ctr][j-ctr] == currentToken) {
-							score += x^ctr;
+							score += (x^ctr);
 						}
 						else
 							break;
@@ -473,7 +479,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i-ctr > 0 && j-ctr > 0) {
 						if (node.currentState[i-ctr][j-ctr] == currentToken) {
-							score += x^ctr;
+							score += (x^ctr);
 						}
 						else
 							break;
@@ -489,7 +495,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i-ctr > 0 && j+ctr > miniMaxBoard.getWidth()) {
 						if (node.currentState[i-ctr][j+ctr] == currentToken) {
-							score += x^ctr;
+							score += (x^ctr);
 						}
 						else
 							break;
@@ -503,7 +509,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i-ctr > 0 && j+ctr > miniMaxBoard.getWidth()) {
 						if (node.currentState[i-ctr][j+ctr] == currentToken) {
-							score += x^ctr;
+							score += (x^ctr);
 						}
 						else
 							break;
@@ -519,7 +525,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i+ctr < miniMaxBoard.getHeight() && j-ctr > 0) {
 						if (node.currentState[i+ctr][j-ctr] == currentToken) {
-							score += x^ctr;
+							score += (x^ctr);
 						}
 						else
 							break;
@@ -533,7 +539,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i+ctr < miniMaxBoard.getHeight() && j-ctr > 0) {
 						if (node.currentState[i+ctr][j-ctr] == currentToken) {
-							score += x^ctr;
+							score += (x^ctr);
 						}
 						else
 							break;
@@ -549,7 +555,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i+ctr < miniMaxBoard.getHeight() && j+ctr < miniMaxBoard.getWidth()) {
 						if (node.currentState[i+ctr][j+ctr] == currentToken) {
-							score += x^ctr;
+							score += (x^ctr);
 						}
 						else
 							break;
@@ -563,7 +569,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i+ctr < miniMaxBoard.getHeight() && j+ctr < miniMaxBoard.getWidth()) {
 						if (node.currentState[i+ctr][j+ctr] == currentToken) {
-							score += x^ctr;
+							score += (x^ctr);
 						}
 						else
 							break;
