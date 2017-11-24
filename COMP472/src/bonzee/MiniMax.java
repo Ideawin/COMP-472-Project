@@ -284,13 +284,13 @@ public class MiniMax {
 					redScore += calculateAttackingScores(i,j,node,oppToken,token,4);
 					if (miniMaxBoard.blackCell(j, i)) {
 						// Check diagonal up-left
-						greenScore += calculateAttackingScores(i,j,node,oppToken,token,5);
+						redScore += calculateAttackingScores(i,j,node,oppToken,token,5);
 						// Check diagonal up-right
-						greenScore += calculateAttackingScores(i,j,node,oppToken,token,6);
+						redScore += calculateAttackingScores(i,j,node,oppToken,token,6);
 						// Check diagonal down-left
-						greenScore += calculateAttackingScores(i,j,node,oppToken,token,7);
+						redScore += calculateAttackingScores(i,j,node,oppToken,token,7);
 						// Check diagonal down-right
-						greenScore += calculateAttackingScores(i,j,node,oppToken,token,8);
+						redScore += calculateAttackingScores(i,j,node,oppToken,token,8);
 					}
 					// Add to the total red score
 					totalRedScore += redScore;
