@@ -31,7 +31,7 @@ public class MiniMax {
 	}
 
 	/**
-	 * Set the tree nodes recursively
+	 * Set the tree nodes recursiv9ely
 	 * @param parentNode
 	 */
 	public void makeTree(Node parentNode) {
@@ -229,14 +229,25 @@ public class MiniMax {
 	public void calculateScore(Node node) {
 		// Initializing random values
 		// TODO use real values
-		int y = 100; // for number of tokens left
-		//int z = 100; // safe
+		int y = 100;
+		int z = 10;
+		
 		double score = 0;
-		//int safeScore = 0;
+		
 		int gCtr = 0;
 		int rCtr = 0;
-		int totalGreenScore = 0;
-		int totalRedScore = 0;
+		
+		int greenAttackScore = 0;
+		int redAttackScore = 0;
+		
+		int greenTerritoryScore = 0;
+		int redTerritoryScore = 0;
+		
+		int numRedTokensLeftSide = 0;
+		int numRedTokensRightSide = 0;
+		
+		int numGreenTokensLeftSide = 0;
+		int numGreenTokensRightSide = 0;
 		// Look for all G/R tokens through the board
 		for(int i = 0; i < node.currentState.length; i++) {
 			for(int j = 0; j < node.currentState[i].length; j++ ) {
@@ -266,11 +277,15 @@ public class MiniMax {
 						greenScore += calculateAttackingScores(i,j,node,oppToken,token,8);
 					}
 					// Add to the total green score
-					totalGreenScore += greenScore;
-//					if (greenScore == 0) {
-//						safeScore += z;
-//					}
-
+					greenAttackScore += greenScore;
+					
+					// Get number of green tokens on the left or on the right side of the board
+					if (j>4) {
+						numGreenTokensLeftSide++;
+					}
+					else if (j<4) {
+						numGreenTokensLeftSide++;
+					}
 				} else if (token == 'R') {
 					rCtr += y;
 					oppToken = 'G';
@@ -293,16 +308,30 @@ public class MiniMax {
 						redScore += calculateAttackingScores(i,j,node,oppToken,token,8);
 					}
 					// Add to the total red score
-					totalRedScore += redScore;
-//					if (redScore == 0) {
-//						safeScore -= z;
-//					}
+					redAttackScore += redScore;
+					
+					// Get number of red tokens on the left or on the right side of the board
+					if (j>4) {
+						numRedTokensLeftSide++;
+					}
+					else if (j<4) {
+						numRedTokensLeftSide++;
+					}
+					else {
+						numRedTokensLeftSide++;
+						numRedTokensLeftSide++;
+					}
+					
 				}
 				else {
 					continue;
 				}
 			}
 		}
+		// Increase the score of opposite token since a value other than 0 indicate
+		// that current token is not well dispersed
+		greenTerritoryScore = z*(Math.abs(numRedTokensLeftSide - numRedTokensRightSide));
+		redTerritoryScore = z*(Math.abs(numGreenTokensLeftSide - numGreenTokensRightSide));
 		
 		if (rCtr == 0) {
 			score = Double.MAX_VALUE;
@@ -313,7 +342,7 @@ public class MiniMax {
 			node.setScore((int)score);
 		}
 		else  {
-			score = 0.5*(gCtr - rCtr) + 0.5*(totalGreenScore - totalRedScore);
+			score = 0.5*(gCtr - rCtr) + 0.3*(greenAttackScore - redAttackScore) + 0.2*(greenTerritoryScore - redTerritoryScore);
 			node.setScore((int)score);
 		}
 	}
@@ -331,7 +360,7 @@ public class MiniMax {
 	public int calculateAttackingScores(int i, int j, Node node, char oppToken, char currentToken, int code) {
 		int ctr = 1;
 		int score = 0;
-		int x = 200;
+		int x = 100;
 
 		switch(code) {
 		case 1: // up
