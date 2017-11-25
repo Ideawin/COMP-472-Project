@@ -36,6 +36,7 @@ public class AIAgainstNaiveHeuristic {
 			if(isNaiveTurn) {
 				move = naiveBoard.playAI(isNaiveGreen);
 				System.out.println("Naive Move: " + move);
+				naiveBoard.displayBoard();
 				int oldYPos  = move.charAt(0) - 'A';
 				int oldXPos = move.charAt(1) - '0' - 1;
 				int newYPos = move.charAt(3) - 'A';
@@ -45,6 +46,7 @@ public class AIAgainstNaiveHeuristic {
 			} else {
 				move = board.playAI(!isNaiveGreen);
 				System.out.println("AI Move: " + move);
+				board.displayBoard();
 				int oldYPos  = move.charAt(0) - 'A';
 				int oldXPos = move.charAt(1) - '0' - 1;
 				int newYPos = move.charAt(3) - 'A';

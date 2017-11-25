@@ -248,6 +248,17 @@ public class MiniMax {
 		
 		int numGreenTokensLeftSide = 0;
 		int numGreenTokensRightSide = 0;
+		
+		// Computational formula for standard deviation
+		// Calculate the S.D. in the X axis (columns)
+		// sd = sqrt((sum(X^2)-((sum(X))^2/N))/(N-1))
+		double standardDevGreen = 0;
+		double standardDevGreenSumXSquare = 0; // sum(X^2) for green tokens
+		double standardDevGreenSumX = 0; // sum(X) for green tokens
+		double standardDevRed = 0;
+		double standardDevRedSumXSquare = 0; // sum(X^2) for red tokens
+		double standardDevRedSumX = 0; // sum(X) for red tokens
+		
 		// Look for all G/R tokens through the board
 		for(int i = 0; i < node.currentState.length; i++) {
 			for(int j = 0; j < node.currentState[i].length; j++ ) {
@@ -286,6 +297,11 @@ public class MiniMax {
 					else if (j<4) {
 						numGreenTokensLeftSide++;
 					}
+					
+					// Standard deviation sums tracking
+					standardDevGreenSumXSquare += j^2;
+					standardDevGreenSumX += j;
+					
 				} else if (token == 'R') {
 					rCtr += y;
 					oppToken = 'G';
@@ -322,6 +338,9 @@ public class MiniMax {
 						numRedTokensLeftSide++;
 					}
 					
+					// Standard deviation sums tracking
+					standardDevRedSumXSquare += j^2;
+					standardDevRedSumX += j;
 				}
 				else {
 					continue;
@@ -333,6 +352,11 @@ public class MiniMax {
 		greenTerritoryScore = z*(Math.abs(numRedTokensLeftSide - numRedTokensRightSide));
 		redTerritoryScore = z*(Math.abs(numGreenTokensLeftSide - numGreenTokensRightSide));
 		
+		
+		// Standard deviation formula, now that the sums have been recorded, calculate the S.D
+		standardDevGreen = Math.sqrt((standardDevGreenSumXSquare - (Math.pow(standardDevGreenSumX, 2)/gCtr))/(gCtr - 1));
+		standardDevRed = Math.sqrt((standardDevRedSumXSquare - (Math.pow(standardDevRedSumX, 2)/rCtr))/(rCtr - 1));
+		
 		if (rCtr == 0) {
 			score = Double.MAX_VALUE;
 			node.setScore((int)score);
@@ -342,7 +366,10 @@ public class MiniMax {
 			node.setScore((int)score);
 		}
 		else  {
-			score = 0.5*(gCtr - rCtr) + 0.3*(greenAttackScore - redAttackScore) + 0.2*(greenTerritoryScore - redTerritoryScore);
+			score = 130*(gCtr - rCtr) 
+					+ 50*(greenAttackScore - redAttackScore) 
+					+ 10*(greenTerritoryScore - redTerritoryScore) 
+					+ 10*((1000*standardDevGreen) - (1000*standardDevRed));
 			node.setScore((int)score);
 		}
 	}

@@ -413,7 +413,7 @@ public class Board {
 	 * Method to make the AI play the next move
 	 * @param isGreen indicates if the token color of the AI is green, false if red
 	 */
-	public void playAI(boolean isGreen) {
+	public String playAI(boolean isGreen) {
 		MiniMax miniMax = new MiniMax();
 		miniMax.makeTree(MINIMAX_MAX_LEVEL_LOOKUP, isGreen, boardArr);
 		String nextBestMove = miniMax.evaluateChildrenAndGetNextMove();
@@ -423,5 +423,6 @@ public class Board {
 						nextBestMove.charAt(4) - '0' - 1, 
 						isGreen ? 'G' : 'R', 
 						false, false);
+		return nextBestMove;
 	}
 }
