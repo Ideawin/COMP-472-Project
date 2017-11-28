@@ -229,8 +229,6 @@ public class MiniMax {
 	public void calculateScore(Node node) {
 		// Initializing random values
 		// TODO use real values
-		int y = 100;
-		int z = 10;
 		
 		double score = 0;
 		
@@ -248,6 +246,12 @@ public class MiniMax {
 		
 		int numGreenTokensLeftSide = 0;
 		int numGreenTokensRightSide = 0;
+		
+		int numRedTokensTopSide = 0;
+		int numRedTokensBottomSide = 0;
+		
+		int numGreenTokensTopSide = 0;
+		int numGreenTokensBottomSide = 0;
 		
 		// Computational formula for standard deviation
 		// Calculate the S.D. in the X axis (columns)
@@ -298,6 +302,13 @@ public class MiniMax {
 						numGreenTokensLeftSide++;
 					}
 					
+					if (i>2) {
+						numGreenTokensBottomSide++;
+					}
+					else if (i<2) {
+						numGreenTokensTopSide++;
+					}
+					
 					// Standard deviation sums tracking
 					standardDevGreenSumXSquare += j^2;
 					standardDevGreenSumX += j;
@@ -334,6 +345,12 @@ public class MiniMax {
 						numRedTokensLeftSide++;
 					}
 					
+					if (i>2) {
+						numRedTokensBottomSide++;
+					}
+					else if (i<2) {
+						numRedTokensTopSide++;
+					}
 					// Standard deviation sums tracking
 					standardDevRedSumXSquare += j^2;
 					standardDevRedSumX += j;
@@ -345,8 +362,8 @@ public class MiniMax {
 		}
 		// Increase the score of opposite token since a value other than 0 indicate
 		// that current token is not well dispersed
-		greenTerritoryScore = z*(Math.abs(numRedTokensLeftSide - numRedTokensRightSide));
-		redTerritoryScore = z*(Math.abs(numGreenTokensLeftSide - numGreenTokensRightSide));
+		greenTerritoryScore = Math.abs(numRedTokensLeftSide - numRedTokensRightSide) + Math.abs(numRedTokensTopSide - numRedTokensBottomSide);
+		redTerritoryScore = Math.abs(numGreenTokensLeftSide - numGreenTokensRightSide) + Math.abs(numGreenTokensTopSide - numGreenTokensBottomSide);
 		
 		
 		// Standard deviation formula, now that the sums have been recorded, calculate the S.D
