@@ -348,7 +348,7 @@ public class MiniMax {
 			score = 200*(gCtr - rCtr) 
 					+ 10*(greenAttackScore - redAttackScore)
 					+ 20*(greenRowScore - redRowScore)
-					+ 20*(greenColScore - redColScore);
+					+ 30*(greenColScore - redColScore);
 			node.setScore((int)score);
 		}
 	}
