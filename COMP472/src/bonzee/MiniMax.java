@@ -292,7 +292,7 @@ public class MiniMax {
 					
 					// Get number of green tokens on the left or on the right side of the board
 					if (j>4) {
-						numGreenTokensLeftSide++;
+						numGreenTokensRightSide++;
 					}
 					else if (j<4) {
 						numGreenTokensLeftSide++;
@@ -328,13 +328,9 @@ public class MiniMax {
 					
 					// Get number of red tokens on the left or on the right side of the board
 					if (j>4) {
-						numRedTokensLeftSide++;
+						numRedTokensRightSide++;
 					}
 					else if (j<4) {
-						numRedTokensLeftSide++;
-					}
-					else {
-						numRedTokensLeftSide++;
 						numRedTokensLeftSide++;
 					}
 					
