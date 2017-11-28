@@ -241,27 +241,10 @@ public class MiniMax {
 		int greenTerritoryScore = 0;
 		int redTerritoryScore = 0;
 		
-		int numRedTokensLeftSide = 0;
-		int numRedTokensRightSide = 0;
-		
-		int numGreenTokensLeftSide = 0;
-		int numGreenTokensRightSide = 0;
-		
-		int numRedTokensTopSide = 0;
-		int numRedTokensBottomSide = 0;
-		
-		int numGreenTokensTopSide = 0;
-		int numGreenTokensBottomSide = 0;
-		
-		// Computational formula for standard deviation
-		// Calculate the S.D. in the X axis (columns)
-		// sd = sqrt((sum(X^2)-((sum(X))^2/N))/(N-1))
-		double standardDevGreen = 0;
-		double standardDevGreenSumXSquare = 0; // sum(X^2) for green tokens
-		double standardDevGreenSumX = 0; // sum(X) for green tokens
-		double standardDevRed = 0;
-		double standardDevRedSumXSquare = 0; // sum(X^2) for red tokens
-		double standardDevRedSumX = 0; // sum(X) for red tokens
+		int greenCentroidX = 0;
+		int greenCentroidY = 0;
+		int redCentroidX = 0;
+		int redCentroidY = 0;
 		
 		// Look for all G/R tokens through the board
 		for(int i = 0; i < node.currentState.length; i++) {
@@ -271,7 +254,7 @@ public class MiniMax {
 				int greenScore = 0;
 				int redScore = 0;
 				if(token == 'G') {
-					gCtr += y;
+					gCtr ++;
 					oppToken = 'R';
 					// Check for up
 					greenScore += calculateAttackingScores(i,j,node,oppToken,token,1);
@@ -294,27 +277,15 @@ public class MiniMax {
 					// Add to the total green score
 					greenAttackScore += greenScore;
 					
-					// Get number of green tokens on the left or on the right side of the board
-					if (j>4) {
-						numGreenTokensRightSide++;
-					}
-					else if (j<4) {
-						numGreenTokensLeftSide++;
-					}
+					// We have a green token, so update the red territory
+					redTerritoryScore += Math.abs(i-2) + Math.abs(j-4);
 					
-					if (i>2) {
-						numGreenTokensBottomSide++;
-					}
-					else if (i<2) {
-						numGreenTokensTopSide++;
-					}
-					
-					// Standard deviation sums tracking
-					standardDevGreenSumXSquare += j^2;
-					standardDevGreenSumX += j;
+					// Centroid
+					greenCentroidX += j;
+					greenCentroidY += i;
 					
 				} else if (token == 'R') {
-					rCtr += y;
+					rCtr ++;
 					oppToken = 'G';
 					// Check for up
 					redScore += calculateAttackingScores(i,j,node,oppToken,token,1);
@@ -337,23 +308,12 @@ public class MiniMax {
 					// Add to the total red score
 					redAttackScore += redScore;
 					
-					// Get number of red tokens on the left or on the right side of the board
-					if (j>4) {
-						numRedTokensRightSide++;
-					}
-					else if (j<4) {
-						numRedTokensLeftSide++;
-					}
+					// We have a red token, so update the green territory
+					greenTerritoryScore += Math.abs(i-2) + Math.abs(j-4);
 					
-					if (i>2) {
-						numRedTokensBottomSide++;
-					}
-					else if (i<2) {
-						numRedTokensTopSide++;
-					}
-					// Standard deviation sums tracking
-					standardDevRedSumXSquare += j^2;
-					standardDevRedSumX += j;
+					// Centroid
+					redCentroidX += j;
+					redCentroidY += i;
 				}
 				else {
 					continue;
@@ -362,13 +322,8 @@ public class MiniMax {
 		}
 		// Increase the score of opposite token since a value other than 0 indicate
 		// that current token is not well dispersed
-		greenTerritoryScore = Math.abs(numRedTokensLeftSide - numRedTokensRightSide) + Math.abs(numRedTokensTopSide - numRedTokensBottomSide);
-		redTerritoryScore = Math.abs(numGreenTokensLeftSide - numGreenTokensRightSide) + Math.abs(numGreenTokensTopSide - numGreenTokensBottomSide);
-		
-		
-		// Standard deviation formula, now that the sums have been recorded, calculate the S.D
-		standardDevGreen = Math.sqrt((standardDevGreenSumXSquare - (Math.pow(standardDevGreenSumX, 2)/gCtr))/(gCtr - 1));
-		standardDevRed = Math.sqrt((standardDevRedSumXSquare - (Math.pow(standardDevRedSumX, 2)/rCtr))/(rCtr - 1));
+//		greenTerritoryScore = Math.abs(numRedTokensLeftSide - numRedTokensRightSide) + Math.abs(numRedTokensTopSide - numRedTokensBottomSide);
+//		redTerritoryScore = Math.abs(numGreenTokensLeftSide - numGreenTokensRightSide) + Math.abs(numGreenTokensTopSide - numGreenTokensBottomSide);
 		
 		if (rCtr == 0) {
 			score = Double.MAX_VALUE;
@@ -379,10 +334,10 @@ public class MiniMax {
 			node.setScore((int)score);
 		}
 		else  {
-			score = 130*(gCtr - rCtr) 
-					+ 50*(greenAttackScore - redAttackScore) 
-					+ 10*(greenTerritoryScore - redTerritoryScore) 
-					+ 10*((1000*standardDevGreen) - (1000*standardDevRed));
+			score = 200*(gCtr - rCtr) 
+					+ 10*(greenAttackScore - redAttackScore)
+					+ 20*(((double)greenCentroidX/gCtr) - ((double)redCentroidX/rCtr))
+					+ 20*(((double) greenCentroidY/gCtr) - ((double)redCentroidY/rCtr));
 			node.setScore((int)score);
 		}
 	}
@@ -400,18 +355,18 @@ public class MiniMax {
 	public int calculateAttackingScores(int i, int j, Node node, char oppToken, char currentToken, int code) {
 		int ctr = 1;
 		int score = 0;
-		int x = 100;
+		int x = 2;
 
 		switch(code) {
 		case 1: // up
 			if (i-2 > 0) {
 				// Check if there is a space followed by opposite token (up)
 				if ((node.currentState[i-1][j] == ' ' && node.currentState[i-2][j] == oppToken)) {
-					ctr = 1;
+					ctr = 2;
 					// Check consecutive tokens that can be killed
 					while (i-ctr > 0) {
 						if (node.currentState[i-ctr][j] == oppToken) {
-							score += (x^ctr);
+							score += Math.pow(x,ctr);
 						}
 						else
 							break;
@@ -426,7 +381,7 @@ public class MiniMax {
 					// Check consecutive tokens that can be killed
 					while (i-ctr > 0) {
 						if (node.currentState[i-ctr][j] == oppToken) {
-							score += (x^ctr);
+							score += Math.pow(x,ctr);
 						}
 						else
 							break;
@@ -439,11 +394,11 @@ public class MiniMax {
 			if (i+2 < miniMaxBoard.getHeight()) {
 				// Check if there is a space followed by opposite token (down)
 				if (node.currentState[i+1][j] == ' ' && node.currentState[i+2][j] == oppToken) {
-					ctr = 1;
+					ctr = 2;
 					// Check consecutive tokens that can be killed
 					while (i+ctr < miniMaxBoard.getHeight()) {
-						if (node.currentState[i+ctr][j] == currentToken) {
-							score += (x^ctr);
+						if (node.currentState[i+ctr][j] == oppToken) {
+							score += Math.pow(x,ctr);
 						}
 						else
 							break;
@@ -457,8 +412,8 @@ public class MiniMax {
 					ctr = 1;
 					// Check consecutive tokens that can be killed
 					while (i+ctr < miniMaxBoard.getHeight()) {
-						if (node.currentState[i+ctr][j] == currentToken) {
-							score += (x^ctr);
+						if (node.currentState[i+ctr][j] == oppToken) {
+							score += Math.pow(x,ctr);
 						}
 						else
 							break;
@@ -471,10 +426,10 @@ public class MiniMax {
 			if (j-2 > 0) {
 				// Check if there is a space followed by opposite token (left)
 				if (node.currentState[i][j-1] == ' ' && node.currentState[i][j-2] == oppToken) {
-					ctr = 1;
+					ctr = 2;
 					while (j-ctr > 0) {
-						if (node.currentState[i][j-ctr] == currentToken) {
-							score += (x^ctr);
+						if (node.currentState[i][j-ctr] == oppToken) {
+							score += Math.pow(x,ctr);
 						}
 						else
 							break;
@@ -487,8 +442,8 @@ public class MiniMax {
 				if (node.currentState[i][j-1] == oppToken && node.currentState[i][j+1] == ' ') {
 					ctr = 1;
 					while (j-ctr > 0) {
-						if (node.currentState[i][j-ctr] == currentToken) {
-							score += (x^ctr);
+						if (node.currentState[i][j-ctr] == oppToken) {
+							score += Math.pow(x,ctr);
 						}
 						else
 							break;
@@ -501,10 +456,10 @@ public class MiniMax {
 			if (j+2 < miniMaxBoard.getWidth()) {
 				// Check if there is a space followed by opposite token (right)
 				if (node.currentState[i][j+1] == ' ' && node.currentState[i][j+2] == oppToken) {
-					ctr = 1;
+					ctr = 2;
 					while (j+ctr < miniMaxBoard.getWidth()) {
-						if (node.currentState[i][j+ctr] == currentToken) {
-							score += (x^ctr);
+						if (node.currentState[i][j+ctr] == oppToken) {
+							score += Math.pow(x,ctr);
 						}
 						else
 							break;
@@ -517,8 +472,8 @@ public class MiniMax {
 				if (node.currentState[i][j-1] == ' ' && node.currentState[i][j+1] == oppToken) {
 					ctr = 1;
 					while (j+ctr < miniMaxBoard.getWidth()) {
-						if (node.currentState[i][j+ctr] == currentToken) {
-							score += (x^ctr);
+						if (node.currentState[i][j+ctr] == oppToken) {
+							score += Math.pow(x,ctr);
 						}
 						else
 							break;
@@ -531,10 +486,10 @@ public class MiniMax {
 			if (i-2 > 0 && j-2 > 0) {
 				if (node.currentState[i-1][j-1] == ' ' && node.currentState[i-2][j-2] == oppToken) {
 					// Check if there is a space followed by opposite token (diagonal up-left)
-					ctr = 1;
+					ctr = 2;
 					while (i-ctr > 0 && j-ctr > 0) {
-						if (node.currentState[i-ctr][j-ctr] == currentToken) {
-							score += (x^ctr);
+						if (node.currentState[i-ctr][j-ctr] == oppToken) {
+							score += Math.pow(x,ctr);
 						}
 						else
 							break;
@@ -547,8 +502,8 @@ public class MiniMax {
 				if (node.currentState[i-1][j-1] == oppToken && node.currentState[i+1][j+1] == ' ') {
 					ctr = 1;
 					while (i-ctr > 0 && j-ctr > 0) {
-						if (node.currentState[i-ctr][j-ctr] == currentToken) {
-							score += (x^ctr);
+						if (node.currentState[i-ctr][j-ctr] == oppToken) {
+							score += Math.pow(x,ctr);
 						}
 						else
 							break;
@@ -561,10 +516,10 @@ public class MiniMax {
 			if (i-2 > 0 && j+2 < miniMaxBoard.getWidth()) {
 				// Check if there is a space followed by opposite token (diagonal up-right)
 				if (node.currentState[i-1][j+1] == ' ' && node.currentState[i-2][j+2] == oppToken) {
-					ctr = 1;
+					ctr = 2;
 					while (i-ctr > 0 && j+ctr > miniMaxBoard.getWidth()) {
-						if (node.currentState[i-ctr][j+ctr] == currentToken) {
-							score += (x^ctr);
+						if (node.currentState[i-ctr][j+ctr] == oppToken) {
+							score += Math.pow(x,ctr);
 						}
 						else
 							break;
@@ -577,8 +532,8 @@ public class MiniMax {
 				if (node.currentState[i-1][j+1] == oppToken && node.currentState[i+1][j-1] == ' ') {
 					ctr = 1;
 					while (i-ctr > 0 && j+ctr > miniMaxBoard.getWidth()) {
-						if (node.currentState[i-ctr][j+ctr] == currentToken) {
-							score += (x^ctr);
+						if (node.currentState[i-ctr][j+ctr] == oppToken) {
+							score += Math.pow(x,ctr);
 						}
 						else
 							break;
@@ -591,10 +546,10 @@ public class MiniMax {
 			if (j-2 > 0 && i+2 < miniMaxBoard.getHeight()) {
 				// Check if there is a space followed by opposite token (diagonal down-left)
 				if (node.currentState[i+1][j-1] == ' ' && node.currentState[i+2][j-2] == oppToken) {
-					ctr = 1;
+					ctr = 2;
 					while (i+ctr < miniMaxBoard.getHeight() && j-ctr > 0) {
-						if (node.currentState[i+ctr][j-ctr] == currentToken) {
-							score += (x^ctr);
+						if (node.currentState[i+ctr][j-ctr] == oppToken) {
+							score += Math.pow(x,ctr);
 						}
 						else
 							break;
@@ -607,8 +562,8 @@ public class MiniMax {
 				if (node.currentState[i+1][j-1] == oppToken && node.currentState[i-1][j+1] == ' ') {
 					ctr = 1;
 					while (i+ctr < miniMaxBoard.getHeight() && j-ctr > 0) {
-						if (node.currentState[i+ctr][j-ctr] == currentToken) {
-							score += (x^ctr);
+						if (node.currentState[i+ctr][j-ctr] == oppToken) {
+							score += Math.pow(x,ctr);
 						}
 						else
 							break;
@@ -621,10 +576,10 @@ public class MiniMax {
 			if (i+2 < miniMaxBoard.getHeight() && j+2 < miniMaxBoard.getWidth()) {
 				// Check if there is a space followed by opposite token (diagonal down-right)
 				if (node.currentState[i+1][j+1] == ' ' && node.currentState[i+2][j+2] == oppToken) {
-					ctr = 1;
+					ctr = 2;
 					while (i+ctr < miniMaxBoard.getHeight() && j+ctr < miniMaxBoard.getWidth()) {
-						if (node.currentState[i+ctr][j+ctr] == currentToken) {
-							score += (x^ctr);
+						if (node.currentState[i+ctr][j+ctr] == oppToken) {
+							score += Math.pow(x,ctr);
 						}
 						else
 							break;
@@ -637,8 +592,8 @@ public class MiniMax {
 				if (node.currentState[i+1][j+1] == oppToken && node.currentState[i-1][j-1] == ' ') {
 					ctr = 1;
 					while (i+ctr < miniMaxBoard.getHeight() && j+ctr < miniMaxBoard.getWidth()) {
-						if (node.currentState[i+ctr][j+ctr] == currentToken) {
-							score += (x^ctr);
+						if (node.currentState[i+ctr][j+ctr] == oppToken) {
+							score += Math.pow(x,ctr);
 						}
 						else
 							break;
