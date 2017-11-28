@@ -238,16 +238,21 @@ public class MiniMax {
 		int greenAttackScore = 0;
 		int redAttackScore = 0;
 		
-		int greenTerritoryScore = 0;
-		int redTerritoryScore = 0;
+		int greenColScore = 0;
+		int greenRowScore = 0;
+		int redColScore = 0;
+		int redRowScore = 0;
 		
-		int greenCentroidX = 0;
-		int greenCentroidY = 0;
-		int redCentroidX = 0;
-		int redCentroidY = 0;
+		
 		
 		// Look for all G/R tokens through the board
+		int[] greenColPresence = new int[Board.WIDTH];
+		int[] redColPresence = new int[Board.WIDTH];
+		
 		for(int i = 0; i < node.currentState.length; i++) {
+			boolean foundRed = false;
+			boolean foundGreen = false;
+			
 			for(int j = 0; j < node.currentState[i].length; j++ ) {
 				char token = node.currentState[i][j];
 				char oppToken;
@@ -256,6 +261,13 @@ public class MiniMax {
 				if(token == 'G') {
 					gCtr ++;
 					oppToken = 'R';
+				
+					// Row check
+					greenColPresence[j] = 1;
+					if(!foundGreen) {
+						foundGreen = true;
+						greenRowScore ++;
+					}
 					// Check for up
 					greenScore += calculateAttackingScores(i,j,node,oppToken,token,1);
 					// Check for down
@@ -277,16 +289,16 @@ public class MiniMax {
 					// Add to the total green score
 					greenAttackScore += greenScore;
 					
-					// We have a green token, so update the red territory
-					redTerritoryScore += Math.abs(i-2) + Math.abs(j-4);
-					
-					// Centroid
-					greenCentroidX += j;
-					greenCentroidY += i;
-					
 				} else if (token == 'R') {
 					rCtr ++;
 					oppToken = 'G';
+					
+					// Row check
+					redColPresence[j] = 1;
+					if(!foundRed) {
+						foundRed = true;
+						redRowScore ++;
+					}
 					// Check for up
 					redScore += calculateAttackingScores(i,j,node,oppToken,token,1);
 					// Check for down
@@ -307,23 +319,22 @@ public class MiniMax {
 					}
 					// Add to the total red score
 					redAttackScore += redScore;
-					
-					// We have a red token, so update the green territory
-					greenTerritoryScore += Math.abs(i-2) + Math.abs(j-4);
-					
-					// Centroid
-					redCentroidX += j;
-					redCentroidY += i;
 				}
 				else {
 					continue;
 				}
 			}
+			
+			if(foundGreen) {
+				
+			}
 		}
-		// Increase the score of opposite token since a value other than 0 indicate
-		// that current token is not well dispersed
-//		greenTerritoryScore = Math.abs(numRedTokensLeftSide - numRedTokensRightSide) + Math.abs(numRedTokensTopSide - numRedTokensBottomSide);
-//		redTerritoryScore = Math.abs(numGreenTokensLeftSide - numGreenTokensRightSide) + Math.abs(numGreenTokensTopSide - numGreenTokensBottomSide);
+		
+		// Position checking
+		for(int j=0; j<greenColPresence.length; j++) {
+			greenRowScore += greenColPresence[j];
+			redRowScore += redColPresence[j];
+		}
 		
 		if (rCtr == 0) {
 			score = Double.MAX_VALUE;
@@ -336,8 +347,8 @@ public class MiniMax {
 		else  {
 			score = 200*(gCtr - rCtr) 
 					+ 10*(greenAttackScore - redAttackScore)
-					+ 20*(((double)greenCentroidX/gCtr) - ((double)redCentroidX/rCtr))
-					+ 20*(((double) greenCentroidY/gCtr) - ((double)redCentroidY/rCtr));
+					+ 20*(greenRowScore - redRowScore)
+					+ 20*(greenColScore - redColScore);
 			node.setScore((int)score);
 		}
 	}
