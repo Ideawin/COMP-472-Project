@@ -229,8 +229,6 @@ public class MiniMax {
 	public void calculateScore(Node node) {
 		// Initializing random values
 		// TODO use real values
-		int y = 100;
-		int z = 10;
 		
 		double score = 0;
 		
@@ -243,11 +241,7 @@ public class MiniMax {
 		int greenTerritoryScore = 0;
 		int redTerritoryScore = 0;
 		
-		int numRedTokensLeftSide = 0;
-		int numRedTokensRightSide = 0;
 		
-		int numGreenTokensLeftSide = 0;
-		int numGreenTokensRightSide = 0;
 		// Look for all G/R tokens through the board
 		for(int i = 0; i < node.currentState.length; i++) {
 			for(int j = 0; j < node.currentState[i].length; j++ ) {
@@ -256,7 +250,7 @@ public class MiniMax {
 				int greenScore = 0;
 				int redScore = 0;
 				if(token == 'G') {
-					gCtr += y;
+					gCtr++;
 					oppToken = 'R';
 					// Check for up
 					greenScore += calculateAttackingScores(i,j,node,oppToken,token,1);
@@ -278,16 +272,11 @@ public class MiniMax {
 					}
 					// Add to the total green score
 					greenAttackScore += greenScore;
-					
-					// Get number of green tokens on the left or on the right side of the board
-					if (j>4) {
-						numGreenTokensLeftSide++;
-					}
-					else if (j<4) {
-						numGreenTokensLeftSide++;
-					}
+					greenTerritoryScore += calculateNumOfWhiteSpaces(i,j,node);
+
+
 				} else if (token == 'R') {
-					rCtr += y;
+					rCtr++;
 					oppToken = 'G';
 					// Check for up
 					redScore += calculateAttackingScores(i,j,node,oppToken,token,1);
@@ -309,30 +298,14 @@ public class MiniMax {
 					}
 					// Add to the total red score
 					redAttackScore += redScore;
-					
-					// Get number of red tokens on the left or on the right side of the board
-					if (j>4) {
-						numRedTokensLeftSide++;
-					}
-					else if (j<4) {
-						numRedTokensLeftSide++;
-					}
-					else {
-						numRedTokensLeftSide++;
-						numRedTokensLeftSide++;
-					}
-					
+					redTerritoryScore += calculateNumOfWhiteSpaces(i,j,node);
 				}
 				else {
 					continue;
 				}
 			}
 		}
-		// Increase the score of opposite token since a value other than 0 indicate
-		// that current token is not well dispersed
-		greenTerritoryScore = z*(Math.abs(numRedTokensLeftSide - numRedTokensRightSide));
-		redTerritoryScore = z*(Math.abs(numGreenTokensLeftSide - numGreenTokensRightSide));
-		
+
 		if (rCtr == 0) {
 			score = Double.MAX_VALUE;
 			node.setScore((int)score);
@@ -342,7 +315,7 @@ public class MiniMax {
 			node.setScore((int)score);
 		}
 		else  {
-			score = 0.5*(gCtr - rCtr) + 0.3*(greenAttackScore - redAttackScore) + 0.2*(greenTerritoryScore - redTerritoryScore);
+			score = 100*(gCtr - rCtr) + 50*(greenAttackScore - redAttackScore) + (greenTerritoryScore - redTerritoryScore);
 			node.setScore((int)score);
 		}
 	}
@@ -359,8 +332,7 @@ public class MiniMax {
 	 */
 	public int calculateAttackingScores(int i, int j, Node node, char oppToken, char currentToken, int code) {
 		int ctr = 1;
-		int score = 0;
-		int x = 100;
+		int score = 1;
 
 		switch(code) {
 		case 1: // up
@@ -371,7 +343,7 @@ public class MiniMax {
 					// Check consecutive tokens that can be killed
 					while (i-ctr > 0) {
 						if (node.currentState[i-ctr][j] == oppToken) {
-							score += (x^ctr);
+							score += score^2;
 						}
 						else
 							break;
@@ -386,7 +358,7 @@ public class MiniMax {
 					// Check consecutive tokens that can be killed
 					while (i-ctr > 0) {
 						if (node.currentState[i-ctr][j] == oppToken) {
-							score += (x^ctr);
+							score += score^2;
 						}
 						else
 							break;
@@ -403,7 +375,7 @@ public class MiniMax {
 					// Check consecutive tokens that can be killed
 					while (i+ctr < miniMaxBoard.getHeight()) {
 						if (node.currentState[i+ctr][j] == currentToken) {
-							score += (x^ctr);
+							score += score^2;
 						}
 						else
 							break;
@@ -418,7 +390,7 @@ public class MiniMax {
 					// Check consecutive tokens that can be killed
 					while (i+ctr < miniMaxBoard.getHeight()) {
 						if (node.currentState[i+ctr][j] == currentToken) {
-							score += (x^ctr);
+							score += score^2;
 						}
 						else
 							break;
@@ -434,7 +406,7 @@ public class MiniMax {
 					ctr = 1;
 					while (j-ctr > 0) {
 						if (node.currentState[i][j-ctr] == currentToken) {
-							score += (x^ctr);
+							score += score^2;
 						}
 						else
 							break;
@@ -448,7 +420,7 @@ public class MiniMax {
 					ctr = 1;
 					while (j-ctr > 0) {
 						if (node.currentState[i][j-ctr] == currentToken) {
-							score += (x^ctr);
+							score += score^2;
 						}
 						else
 							break;
@@ -464,7 +436,7 @@ public class MiniMax {
 					ctr = 1;
 					while (j+ctr < miniMaxBoard.getWidth()) {
 						if (node.currentState[i][j+ctr] == currentToken) {
-							score += (x^ctr);
+							score += score^2;
 						}
 						else
 							break;
@@ -478,7 +450,7 @@ public class MiniMax {
 					ctr = 1;
 					while (j+ctr < miniMaxBoard.getWidth()) {
 						if (node.currentState[i][j+ctr] == currentToken) {
-							score += (x^ctr);
+							score += score^2;
 						}
 						else
 							break;
@@ -494,7 +466,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i-ctr > 0 && j-ctr > 0) {
 						if (node.currentState[i-ctr][j-ctr] == currentToken) {
-							score += (x^ctr);
+							score += score^2;
 						}
 						else
 							break;
@@ -508,7 +480,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i-ctr > 0 && j-ctr > 0) {
 						if (node.currentState[i-ctr][j-ctr] == currentToken) {
-							score += (x^ctr);
+							score += score^2;
 						}
 						else
 							break;
@@ -524,7 +496,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i-ctr > 0 && j+ctr > miniMaxBoard.getWidth()) {
 						if (node.currentState[i-ctr][j+ctr] == currentToken) {
-							score += (x^ctr);
+							score += score^2;
 						}
 						else
 							break;
@@ -538,7 +510,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i-ctr > 0 && j+ctr > miniMaxBoard.getWidth()) {
 						if (node.currentState[i-ctr][j+ctr] == currentToken) {
-							score += (x^ctr);
+							score += score^2;
 						}
 						else
 							break;
@@ -554,7 +526,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i+ctr < miniMaxBoard.getHeight() && j-ctr > 0) {
 						if (node.currentState[i+ctr][j-ctr] == currentToken) {
-							score += (x^ctr);
+							score += score^2;
 						}
 						else
 							break;
@@ -568,7 +540,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i+ctr < miniMaxBoard.getHeight() && j-ctr > 0) {
 						if (node.currentState[i+ctr][j-ctr] == currentToken) {
-							score += (x^ctr);
+							score += score^2;
 						}
 						else
 							break;
@@ -584,7 +556,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i+ctr < miniMaxBoard.getHeight() && j+ctr < miniMaxBoard.getWidth()) {
 						if (node.currentState[i+ctr][j+ctr] == currentToken) {
-							score += (x^ctr);
+							score += score^2;
 						}
 						else
 							break;
@@ -598,7 +570,7 @@ public class MiniMax {
 					ctr = 1;
 					while (i+ctr < miniMaxBoard.getHeight() && j+ctr < miniMaxBoard.getWidth()) {
 						if (node.currentState[i+ctr][j+ctr] == currentToken) {
-							score += (x^ctr);
+							score += score^2;
 						}
 						else
 							break;
@@ -611,6 +583,49 @@ public class MiniMax {
 		return score;
 	}
 
+	/**
+	 * Method to calculate the number of white spaces surrounding a token
+	 * @param i
+	 * @param j
+	 * @param node
+	 * @return
+	 */
+	public int calculateNumOfWhiteSpaces(int i, int j, Node node) {
+		int ctr = 0;
+		if (i+1 < miniMaxBoard.getHeight()) {
+			if (node.currentState[i+1][j] == ' ')
+				ctr++;
+			if (j-1 > 0) {
+				if (node.currentState[i+1][j-1] == ' ')
+					ctr++;
+			}
+			if (j+1 < miniMaxBoard.getWidth()) {
+				if (node.currentState[i+1][j+1] == ' ')
+					ctr++;
+			}
+		}
+		if (i-1 > 0) {
+			if (node.currentState[i-1][j] == ' ')
+				ctr++;
+			if (j-1 > 0) {
+				if (node.currentState[i-1][j-1] == ' ')
+					ctr++;
+			}
+			if (j+1 < miniMaxBoard.getWidth()) {
+				if (node.currentState[i-1][j+1] == ' ')
+					ctr++;
+			}
+		}
+		if (j-1 > 0) {
+			if (node.currentState[i][j-1] == ' ')
+				ctr++;
+		}
+		if (j+1 < miniMaxBoard.getWidth()) {
+			if (node.currentState[i][j+1] == ' ')
+				ctr++;
+		}
+		return ctr;
+	}
 	/**
 	 * Method to find the best next move
 	 * @param isMAXPlayer a Boolean indicating whether the PARENT node is MIN or MAX
