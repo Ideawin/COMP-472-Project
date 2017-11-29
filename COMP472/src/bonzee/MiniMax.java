@@ -2,6 +2,7 @@ package bonzee;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class MiniMax {
 	MiniMaxTree tree;
 	int maxLevelLookout;
@@ -229,21 +230,37 @@ public class MiniMax {
 	public void calculateScore(Node node) {
 		// Initializing random values
 		// TODO use real values
-		
+
 		double score = 0;
-		
+
 		int gCtr = 0;
 		int rCtr = 0;
-		
+
+		int gCtrBlack = 0;
+		int rCtrBlack = 0;
+
+		int gCtrWhite = 0;
+		int rCtrWhite = 0;
+
 		int greenAttackScore = 0;
 		int redAttackScore = 0;
-		
-		int greenTerritoryScore = 0;
-		int redTerritoryScore = 0;
-		
-		
+
+		int greenColScore = 0;
+		int greenRowScore = 0;
+		int redColScore = 0;
+		int redRowScore = 0;
+
+		int greenWhiteSpaces = 0;
+		int redWhiteSpaces = 0;
+
 		// Look for all G/R tokens through the board
+		int[] greenColPresence = new int[Board.WIDTH];
+		int[] redColPresence = new int[Board.WIDTH];
+
 		for(int i = 0; i < node.currentState.length; i++) {
+			boolean foundRed = false;
+			boolean foundGreen = false;
+
 			for(int j = 0; j < node.currentState[i].length; j++ ) {
 				char token = node.currentState[i][j];
 				char oppToken;
@@ -252,6 +269,15 @@ public class MiniMax {
 				if(token == 'G') {
 					gCtr++;
 					oppToken = 'R';
+
+					// Row check
+					//if ((j+1)%2 == 0) {
+						greenColPresence[j] = 1;
+					//}
+					if(!foundGreen) {
+						foundGreen = true;
+						greenRowScore ++;
+					}
 					// Check for up
 					greenScore += calculateAttackingScores(i,j,node,oppToken,token,1);
 					// Check for down
@@ -261,6 +287,7 @@ public class MiniMax {
 					// Check for right
 					greenScore += calculateAttackingScores(i,j,node,oppToken,token,4);
 					if (miniMaxBoard.blackCell(j, i)) {
+						gCtrBlack++;
 						// Check diagonal up-left
 						greenScore += calculateAttackingScores(i,j,node,oppToken,token,5);
 						// Check diagonal up-right
@@ -272,12 +299,21 @@ public class MiniMax {
 					}
 					// Add to the total green score
 					greenAttackScore += greenScore;
-					greenTerritoryScore += calculateNumOfWhiteSpaces(i,j,node);
-
+					greenWhiteSpaces += calculateNumOfWhiteSpaces(i,j,node);
 
 				} else if (token == 'R') {
-					rCtr++;
+					rCtr ++;
 					oppToken = 'G';
+
+					// Row check
+					//if ((j+1)%2 == 0) {
+						redColPresence[j] = 1;
+					//}
+					
+					if(!foundRed) {
+						foundRed = true;
+						redRowScore ++;
+					}
 					// Check for up
 					redScore += calculateAttackingScores(i,j,node,oppToken,token,1);
 					// Check for down
@@ -287,6 +323,7 @@ public class MiniMax {
 					// Check for right
 					redScore += calculateAttackingScores(i,j,node,oppToken,token,4);
 					if (miniMaxBoard.blackCell(j, i)) {
+						rCtrBlack++;
 						// Check diagonal up-left
 						redScore += calculateAttackingScores(i,j,node,oppToken,token,5);
 						// Check diagonal up-right
@@ -298,7 +335,7 @@ public class MiniMax {
 					}
 					// Add to the total red score
 					redAttackScore += redScore;
-					redTerritoryScore += calculateNumOfWhiteSpaces(i,j,node);
+					redWhiteSpaces += calculateNumOfWhiteSpaces(i,j,node);
 				}
 				else {
 					continue;
@@ -306,283 +343,25 @@ public class MiniMax {
 			}
 		}
 
-		if (rCtr == 0) {
-			score = Double.MAX_VALUE;
-			node.setScore((int)score);
+		// Num of white cells
+		rCtrWhite = rCtr - rCtrBlack;
+		gCtrWhite = gCtr - gCtrBlack;
+
+		// Position checking
+		for(int j=0; j<greenColPresence.length; j++) {
+			greenRowScore += greenColPresence[j];
+			redRowScore += redColPresence[j];
 		}
-		else if (gCtr == 0) {
-			score = Double.MIN_VALUE;
+
+			score = 50*(gCtr - rCtr) 
+					+ 50*(gCtrBlack - rCtrBlack)
+					+ 8*(greenWhiteSpaces - redWhiteSpaces)
+					+ 2*(greenAttackScore - redAttackScore)
+					+ 2*(greenRowScore - redRowScore)
+					+ 4*(greenColScore - redColScore);
 			node.setScore((int)score);
-		}
-		else  {
-			score = 100*(gCtr - rCtr) + 50*(greenAttackScore - redAttackScore) + (greenTerritoryScore - redTerritoryScore);
-			node.setScore((int)score);
-		}
 	}
-
-	/**
-	 * Method to calculate the score for number of tokens killed
-	 * @param i
-	 * @param j
-	 * @param node
-	 * @param oppToken
-	 * @param currentToken
-	 * @param code
-	 * @return
-	 */
-	public int calculateAttackingScores(int i, int j, Node node, char oppToken, char currentToken, int code) {
-		int ctr = 1;
-		int score = 1;
-
-		switch(code) {
-		case 1: // up
-			if (i-2 > 0) {
-				// Check if there is a space followed by opposite token (up)
-				if ((node.currentState[i-1][j] == ' ' && node.currentState[i-2][j] == oppToken)) {
-					ctr = 1;
-					// Check consecutive tokens that can be killed
-					while (i-ctr > 0) {
-						if (node.currentState[i-ctr][j] == oppToken) {
-							score += score^2;
-						}
-						else
-							break;
-						ctr++;
-					}
-				}
-			}
-			if (i-1 > 0 && i+1 < miniMaxBoard.getHeight()) {
-				// Check if there is a space before current token and opposite token after (down)
-				if (node.currentState[i-1][j] == oppToken && node.currentState[i+1][j] == ' ') {
-					ctr = 1;
-					// Check consecutive tokens that can be killed
-					while (i-ctr > 0) {
-						if (node.currentState[i-ctr][j] == oppToken) {
-							score += score^2;
-						}
-						else
-							break;
-						ctr++;
-					}
-				}
-			}
-			break;
-		case 2: // down
-			if (i+2 < miniMaxBoard.getHeight()) {
-				// Check if there is a space followed by opposite token (down)
-				if (node.currentState[i+1][j] == ' ' && node.currentState[i+2][j] == oppToken) {
-					ctr = 1;
-					// Check consecutive tokens that can be killed
-					while (i+ctr < miniMaxBoard.getHeight()) {
-						if (node.currentState[i+ctr][j] == currentToken) {
-							score += score^2;
-						}
-						else
-							break;
-						ctr++;
-					}
-				}
-			}
-			if (i-1 > 0 && i+1 < miniMaxBoard.getHeight()) {
-				// Check if there is a space before current token and opposite token after (up)
-				if (node.currentState[i-1][j] == ' ' && node.currentState[i+1][j] == oppToken) {
-					ctr = 1;
-					// Check consecutive tokens that can be killed
-					while (i+ctr < miniMaxBoard.getHeight()) {
-						if (node.currentState[i+ctr][j] == currentToken) {
-							score += score^2;
-						}
-						else
-							break;
-						ctr++;
-					}
-				}
-			}
-			break;
-		case 3: // left
-			if (j-2 > 0) {
-				// Check if there is a space followed by opposite token (left)
-				if (node.currentState[i][j-1] == ' ' && node.currentState[i][j-2] == oppToken) {
-					ctr = 1;
-					while (j-ctr > 0) {
-						if (node.currentState[i][j-ctr] == currentToken) {
-							score += score^2;
-						}
-						else
-							break;
-						ctr++;
-					}
-				}
-			}
-			// Check if there is a space before current token and opposite token after (right)
-			if (j-1 > 0 && j+1 < miniMaxBoard.getWidth()) {
-				if (node.currentState[i][j-1] == oppToken && node.currentState[i][j+1] == ' ') {
-					ctr = 1;
-					while (j-ctr > 0) {
-						if (node.currentState[i][j-ctr] == currentToken) {
-							score += score^2;
-						}
-						else
-							break;
-						ctr++;
-					}
-				}
-			}
-			break;
-		case 4: // right
-			if (j+2 < miniMaxBoard.getWidth()) {
-				// Check if there is a space followed by opposite token (right)
-				if (node.currentState[i][j+1] == ' ' && node.currentState[i][j+2] == oppToken) {
-					ctr = 1;
-					while (j+ctr < miniMaxBoard.getWidth()) {
-						if (node.currentState[i][j+ctr] == currentToken) {
-							score += score^2;
-						}
-						else
-							break;
-						ctr++;
-					}
-				}
-			}
-			if (j-1 > 0 && j+1 < miniMaxBoard.getWidth()) {
-				// Check if there is a space before current token and opposite token after (left)
-				if (node.currentState[i][j-1] == ' ' && node.currentState[i][j+1] == oppToken) {
-					ctr = 1;
-					while (j+ctr < miniMaxBoard.getWidth()) {
-						if (node.currentState[i][j+ctr] == currentToken) {
-							score += score^2;
-						}
-						else
-							break;
-						ctr++;
-					}
-				}
-			}
-			break;
-		case 5: // diagonal up-left
-			if (i-2 > 0 && j-2 > 0) {
-				if (node.currentState[i-1][j-1] == ' ' && node.currentState[i-2][j-2] == oppToken) {
-					// Check if there is a space followed by opposite token (diagonal up-left)
-					ctr = 1;
-					while (i-ctr > 0 && j-ctr > 0) {
-						if (node.currentState[i-ctr][j-ctr] == currentToken) {
-							score += score^2;
-						}
-						else
-							break;
-						ctr++;
-					}
-				}
-			}
-			if (i-1 > 0 && j-1 > 0 && i+1 < miniMaxBoard.getHeight() && j+1 < miniMaxBoard.getWidth()) {
-				// Check if there is a space before current token and opposite token after (diagonal down-right)
-				if (node.currentState[i-1][j-1] == oppToken && node.currentState[i+1][j+1] == ' ') {
-					ctr = 1;
-					while (i-ctr > 0 && j-ctr > 0) {
-						if (node.currentState[i-ctr][j-ctr] == currentToken) {
-							score += score^2;
-						}
-						else
-							break;
-						ctr++;
-					}
-				}
-			}
-			break;
-		case 6: // diagonal up-right
-			if (i-2 > 0 && j+2 < miniMaxBoard.getWidth()) {
-				// Check if there is a space followed by opposite token (diagonal up-right)
-				if (node.currentState[i-1][j+1] == ' ' && node.currentState[i-2][j+2] == oppToken) {
-					ctr = 1;
-					while (i-ctr > 0 && j+ctr > miniMaxBoard.getWidth()) {
-						if (node.currentState[i-ctr][j+ctr] == currentToken) {
-							score += score^2;
-						}
-						else
-							break;
-						ctr++;
-					}
-				}
-			}
-			if (i-1 > 0 && j+1 < miniMaxBoard.getWidth() && i+1 < miniMaxBoard.getHeight() && j-1 > 0) {
-				// Check if there is a space before current token and opposite token after (diagonal down-left)
-				if (node.currentState[i-1][j+1] == oppToken && node.currentState[i+1][j-1] == ' ') {
-					ctr = 1;
-					while (i-ctr > 0 && j+ctr > miniMaxBoard.getWidth()) {
-						if (node.currentState[i-ctr][j+ctr] == currentToken) {
-							score += score^2;
-						}
-						else
-							break;
-						ctr++;
-					}
-				}
-			}
-			break;
-		case 7: // diagonal down-left
-			if (j-2 > 0 && i+2 < miniMaxBoard.getHeight()) {
-				// Check if there is a space followed by opposite token (diagonal down-left)
-				if (node.currentState[i+1][j-1] == ' ' && node.currentState[i+2][j-2] == oppToken) {
-					ctr = 1;
-					while (i+ctr < miniMaxBoard.getHeight() && j-ctr > 0) {
-						if (node.currentState[i+ctr][j-ctr] == currentToken) {
-							score += score^2;
-						}
-						else
-							break;
-						ctr++;
-					}
-				}
-			}
-			if (i+1 < miniMaxBoard.getHeight() && j-1 > 0 && i-1 > 0 && j+1 < miniMaxBoard.getWidth()) {
-				// Check if there is a space before current token and opposite token after (diagonal up-right)
-				if (node.currentState[i+1][j-1] == oppToken && node.currentState[i-1][j+1] == ' ') {
-					ctr = 1;
-					while (i+ctr < miniMaxBoard.getHeight() && j-ctr > 0) {
-						if (node.currentState[i+ctr][j-ctr] == currentToken) {
-							score += score^2;
-						}
-						else
-							break;
-						ctr++;
-					}
-				}
-			}
-			break;
-		case 8: // diagonal down-right
-			if (i+2 < miniMaxBoard.getHeight() && j+2 < miniMaxBoard.getWidth()) {
-				// Check if there is a space followed by opposite token (diagonal down-right)
-				if (node.currentState[i+1][j+1] == ' ' && node.currentState[i+2][j+2] == oppToken) {
-					ctr = 1;
-					while (i+ctr < miniMaxBoard.getHeight() && j+ctr < miniMaxBoard.getWidth()) {
-						if (node.currentState[i+ctr][j+ctr] == currentToken) {
-							score += score^2;
-						}
-						else
-							break;
-						ctr++;
-					}
-				}
-			}
-			if (i+1 < miniMaxBoard.getHeight() && j+1 < miniMaxBoard.getWidth() && i-1 > 0 && j-1 > 0) {
-				// Check if there is a space before current token and opposite token after (diagonal up-left)
-				if (node.currentState[i+1][j+1] == oppToken && node.currentState[i-1][j-1] == ' ') {
-					ctr = 1;
-					while (i+ctr < miniMaxBoard.getHeight() && j+ctr < miniMaxBoard.getWidth()) {
-						if (node.currentState[i+ctr][j+ctr] == currentToken) {
-							score += score^2;
-						}
-						else
-							break;
-						ctr++;
-					}
-				}
-			}
-			break;
-		}
-		return score;
-	}
-
+	
 	/**
 	 * Method to calculate the number of white spaces surrounding a token
 	 * @param i
@@ -626,6 +405,271 @@ public class MiniMax {
 		}
 		return ctr;
 	}
+
+	/**
+	 * Method to calculate the score for number of tokens killed
+	 * @param i
+	 * @param j
+	 * @param node
+	 * @param oppToken
+	 * @param currentToken
+	 * @param code
+	 * @return
+	 */
+	public int calculateAttackingScores(int i, int j, Node node, char oppToken, char currentToken, int code) {
+		int ctr = 1;
+		int score = 0;
+		int x = 2;
+
+		switch(code) {
+		case 1: // up
+			if (i-2 > 0) {
+				// Check if there is a space followed by opposite token (up)
+				if ((node.currentState[i-1][j] == ' ' && node.currentState[i-2][j] == oppToken)) {
+					ctr = 2;
+					// Check consecutive tokens that can be killed
+					while (i-ctr > 0) {
+						if (node.currentState[i-ctr][j] == oppToken) {
+							score += Math.pow(x,ctr);
+						}
+						else
+							break;
+						ctr++;
+					}
+				}
+			}
+			if (i-1 > 0 && i+1 < miniMaxBoard.getHeight()) {
+				// Check if there is a space before current token and opposite token after (down)
+				if (node.currentState[i-1][j] == oppToken && node.currentState[i+1][j] == ' ') {
+					ctr = 1;
+					// Check consecutive tokens that can be killed
+					while (i-ctr > 0) {
+						if (node.currentState[i-ctr][j] == oppToken) {
+							score += Math.pow(x,ctr);
+						}
+						else
+							break;
+						ctr++;
+					}
+				}
+			}
+			break;
+		case 2: // down
+			if (i+2 < miniMaxBoard.getHeight()) {
+				// Check if there is a space followed by opposite token (down)
+				if (node.currentState[i+1][j] == ' ' && node.currentState[i+2][j] == oppToken) {
+					ctr = 2;
+					// Check consecutive tokens that can be killed
+					while (i+ctr < miniMaxBoard.getHeight()) {
+						if (node.currentState[i+ctr][j] == oppToken) {
+							score += Math.pow(x,ctr);
+						}
+						else
+							break;
+						ctr++;
+					}
+				}
+			}
+			if (i-1 > 0 && i+1 < miniMaxBoard.getHeight()) {
+				// Check if there is a space before current token and opposite token after (up)
+				if (node.currentState[i-1][j] == ' ' && node.currentState[i+1][j] == oppToken) {
+					ctr = 1;
+					// Check consecutive tokens that can be killed
+					while (i+ctr < miniMaxBoard.getHeight()) {
+						if (node.currentState[i+ctr][j] == oppToken) {
+							score += Math.pow(x,ctr);
+						}
+						else
+							break;
+						ctr++;
+					}
+				}
+			}
+			break;
+		case 3: // left
+			if (j-2 > 0) {
+				// Check if there is a space followed by opposite token (left)
+				if (node.currentState[i][j-1] == ' ' && node.currentState[i][j-2] == oppToken) {
+					ctr = 2;
+					while (j-ctr > 0) {
+						if (node.currentState[i][j-ctr] == oppToken) {
+							score += Math.pow(x,ctr);
+						}
+						else
+							break;
+						ctr++;
+					}
+				}
+			}
+			// Check if there is a space before current token and opposite token after (right)
+			if (j-1 > 0 && j+1 < miniMaxBoard.getWidth()) {
+				if (node.currentState[i][j-1] == oppToken && node.currentState[i][j+1] == ' ') {
+					ctr = 1;
+					while (j-ctr > 0) {
+						if (node.currentState[i][j-ctr] == oppToken) {
+							score += Math.pow(x,ctr);
+						}
+						else
+							break;
+						ctr++;
+					}
+				}
+			}
+			break;
+		case 4: // right
+			if (j+2 < miniMaxBoard.getWidth()) {
+				// Check if there is a space followed by opposite token (right)
+				if (node.currentState[i][j+1] == ' ' && node.currentState[i][j+2] == oppToken) {
+					ctr = 2;
+					while (j+ctr < miniMaxBoard.getWidth()) {
+						if (node.currentState[i][j+ctr] == oppToken) {
+							score += Math.pow(x,ctr);
+						}
+						else
+							break;
+						ctr++;
+					}
+				}
+			}
+			if (j-1 > 0 && j+1 < miniMaxBoard.getWidth()) {
+				// Check if there is a space before current token and opposite token after (left)
+				if (node.currentState[i][j-1] == ' ' && node.currentState[i][j+1] == oppToken) {
+					ctr = 1;
+					while (j+ctr < miniMaxBoard.getWidth()) {
+						if (node.currentState[i][j+ctr] == oppToken) {
+							score += Math.pow(x,ctr);
+						}
+						else
+							break;
+						ctr++;
+					}
+				}
+			}
+			break;
+		case 5: // diagonal up-left
+			if (i-2 > 0 && j-2 > 0) {
+				if (node.currentState[i-1][j-1] == ' ' && node.currentState[i-2][j-2] == oppToken) {
+					// Check if there is a space followed by opposite token (diagonal up-left)
+					ctr = 2;
+					while (i-ctr > 0 && j-ctr > 0) {
+						if (node.currentState[i-ctr][j-ctr] == oppToken) {
+							score += Math.pow(x,ctr);
+						}
+						else
+							break;
+						ctr++;
+					}
+				}
+			}
+			if (i-1 > 0 && j-1 > 0 && i+1 < miniMaxBoard.getHeight() && j+1 < miniMaxBoard.getWidth()) {
+				// Check if there is a space before current token and opposite token after (diagonal down-right)
+				if (node.currentState[i-1][j-1] == oppToken && node.currentState[i+1][j+1] == ' ') {
+					ctr = 1;
+					while (i-ctr > 0 && j-ctr > 0) {
+						if (node.currentState[i-ctr][j-ctr] == oppToken) {
+							score += Math.pow(x,ctr);
+						}
+						else
+							break;
+						ctr++;
+					}
+				}
+			}
+			break;
+		case 6: // diagonal up-right
+			if (i-2 > 0 && j+2 < miniMaxBoard.getWidth()) {
+				// Check if there is a space followed by opposite token (diagonal up-right)
+				if (node.currentState[i-1][j+1] == ' ' && node.currentState[i-2][j+2] == oppToken) {
+					ctr = 2;
+					while (i-ctr > 0 && j+ctr > miniMaxBoard.getWidth()) {
+						if (node.currentState[i-ctr][j+ctr] == oppToken) {
+							score += Math.pow(x,ctr);
+						}
+						else
+							break;
+						ctr++;
+					}
+				}
+			}
+			if (i-1 > 0 && j+1 < miniMaxBoard.getWidth() && i+1 < miniMaxBoard.getHeight() && j-1 > 0) {
+				// Check if there is a space before current token and opposite token after (diagonal down-left)
+				if (node.currentState[i-1][j+1] == oppToken && node.currentState[i+1][j-1] == ' ') {
+					ctr = 1;
+					while (i-ctr > 0 && j+ctr > miniMaxBoard.getWidth()) {
+						if (node.currentState[i-ctr][j+ctr] == oppToken) {
+							score += Math.pow(x,ctr);
+						}
+						else
+							break;
+						ctr++;
+					}
+				}
+			}
+			break;
+		case 7: // diagonal down-left
+			if (j-2 > 0 && i+2 < miniMaxBoard.getHeight()) {
+				// Check if there is a space followed by opposite token (diagonal down-left)
+				if (node.currentState[i+1][j-1] == ' ' && node.currentState[i+2][j-2] == oppToken) {
+					ctr = 2;
+					while (i+ctr < miniMaxBoard.getHeight() && j-ctr > 0) {
+						if (node.currentState[i+ctr][j-ctr] == oppToken) {
+							score += Math.pow(x,ctr);
+						}
+						else
+							break;
+						ctr++;
+					}
+				}
+			}
+			if (i+1 < miniMaxBoard.getHeight() && j-1 > 0 && i-1 > 0 && j+1 < miniMaxBoard.getWidth()) {
+				// Check if there is a space before current token and opposite token after (diagonal up-right)
+				if (node.currentState[i+1][j-1] == oppToken && node.currentState[i-1][j+1] == ' ') {
+					ctr = 1;
+					while (i+ctr < miniMaxBoard.getHeight() && j-ctr > 0) {
+						if (node.currentState[i+ctr][j-ctr] == oppToken) {
+							score += Math.pow(x,ctr);
+						}
+						else
+							break;
+						ctr++;
+					}
+				}
+			}
+			break;
+		case 8: // diagonal down-right
+			if (i+2 < miniMaxBoard.getHeight() && j+2 < miniMaxBoard.getWidth()) {
+				// Check if there is a space followed by opposite token (diagonal down-right)
+				if (node.currentState[i+1][j+1] == ' ' && node.currentState[i+2][j+2] == oppToken) {
+					ctr = 2;
+					while (i+ctr < miniMaxBoard.getHeight() && j+ctr < miniMaxBoard.getWidth()) {
+						if (node.currentState[i+ctr][j+ctr] == oppToken) {
+							score += Math.pow(x,ctr);
+						}
+						else
+							break;
+						ctr++;
+					}
+				}
+			}
+			if (i+1 < miniMaxBoard.getHeight() && j+1 < miniMaxBoard.getWidth() && i-1 > 0 && j-1 > 0) {
+				// Check if there is a space before current token and opposite token after (diagonal up-left)
+				if (node.currentState[i+1][j+1] == oppToken && node.currentState[i-1][j-1] == ' ') {
+					ctr = 1;
+					while (i+ctr < miniMaxBoard.getHeight() && j+ctr < miniMaxBoard.getWidth()) {
+						if (node.currentState[i+ctr][j+ctr] == oppToken) {
+							score += Math.pow(x,ctr);
+						}
+						else
+							break;
+						ctr++;
+					}
+				}
+			}
+			break;
+		}
+		return score;
+	}
+
 	/**
 	 * Method to find the best next move
 	 * @param isMAXPlayer a Boolean indicating whether the PARENT node is MIN or MAX
@@ -680,3 +724,4 @@ public class MiniMax {
 	}
 }
 
+   
