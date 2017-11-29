@@ -414,7 +414,7 @@ public class NaiveBoard {
 	 * @param isGreen indicates if the token color of the AI is green, false if red
 	 */
 	public String playAI(boolean isGreen) {
-		NaiveMiniMax miniMax = new NaiveMiniMax();
+		MiniMax miniMax = new MiniMax();
 		miniMax.makeTree(MINIMAX_MAX_LEVEL_LOOKUP, isGreen, boardArr);
 		String nextBestMove = miniMax.evaluateChildrenAndGetNextMove();
 		this.moveToken(nextBestMove.charAt(0) - 'A', 
