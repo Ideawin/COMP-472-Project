@@ -343,14 +343,18 @@ public class MiniMax {
 			}
 		}
 
+		// Num of white cells
+		rCtrWhite = rCtr - rCtrBlack;
+		gCtrWhite = gCtr - gCtrBlack;
+
 		// Position checking
 		for(int j=0; j<greenColPresence.length; j++) {
 			greenRowScore += greenColPresence[j];
 			redRowScore += redColPresence[j];
 		}
 
-			score = 50*(gCtr - rCtr) 
-					+ 50*(gCtrBlack - rCtrBlack)
+			score = 100*(gCtr - rCtr) 
+					+ 60*(gCtrBlack - rCtrBlack)
 					+ 8*(greenWhiteSpaces - redWhiteSpaces)
 					+ 2*(greenAttackScore - redAttackScore)
 					+ 2*(greenRowScore - redRowScore)
