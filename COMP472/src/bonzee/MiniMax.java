@@ -343,10 +343,6 @@ public class MiniMax {
 			}
 		}
 
-		// Num of white cells
-		rCtrWhite = rCtr - rCtrBlack;
-		gCtrWhite = gCtr - gCtrBlack;
-
 		// Position checking
 		for(int j=0; j<greenColPresence.length; j++) {
 			greenRowScore += greenColPresence[j];
