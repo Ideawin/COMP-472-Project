@@ -239,9 +239,6 @@ public class MiniMax {
 		int gCtrBlack = 0;
 		int rCtrBlack = 0;
 
-		int gCtrWhite = 0;
-		int rCtrWhite = 0;
-
 		int greenAttackScore = 0;
 		int redAttackScore = 0;
 
@@ -343,10 +340,6 @@ public class MiniMax {
 			}
 		}
 
-		// Num of white cells
-		rCtrWhite = rCtr - rCtrBlack;
-		gCtrWhite = gCtr - gCtrBlack;
-
 		// Position checking
 		for(int j=0; j<greenColPresence.length; j++) {
 			greenRowScore += greenColPresence[j];
@@ -358,7 +351,7 @@ public class MiniMax {
 					+ 8*(greenWhiteSpaces - redWhiteSpaces)
 					+ 2*(greenAttackScore - redAttackScore)
 					+ 2*(greenRowScore - redRowScore)
-					+ 4*(greenColScore - redColScore);
+					+ 3*(greenColScore - redColScore);
 			node.setScore((int)score);
 	}
 	
