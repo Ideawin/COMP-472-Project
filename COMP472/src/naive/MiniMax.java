@@ -1,4 +1,4 @@
-package bonzee;
+package naive;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -6,13 +6,13 @@ import java.util.List;
 public class MiniMax {
 	MiniMaxTree tree;
 	int maxLevelLookout;
-	Board miniMaxBoard;
+	NaiveBoard miniMaxBoard;
 
 	/**
 	 * Public constructor
 	 */
 	public MiniMax() {
-		miniMaxBoard = new Board();
+		miniMaxBoard = new NaiveBoard();
 	}
 
 	/**
@@ -22,7 +22,7 @@ public class MiniMax {
 	 * @param currentBoardState a 2d array of char representing the current board state
 	 */
 	public void makeTree(int maxLevelLookout, boolean isMAX, char[][] currentBoardState) {
-		miniMaxBoard = new Board();
+		miniMaxBoard = new NaiveBoard();
 		this.maxLevelLookout = maxLevelLookout;
 		tree = new MiniMaxTree();
 		Node root = new Node(isMAX, maxLevelLookout, "");
@@ -254,8 +254,8 @@ public class MiniMax {
 		int redWhiteSpaces = 0;
 
 		// Look for all G/R tokens through the board
-		int[] greenColPresence = new int[Board.WIDTH];
-		int[] redColPresence = new int[Board.WIDTH];
+		int[] greenColPresence = new int[NaiveBoard.WIDTH];
+		int[] redColPresence = new int[NaiveBoard.WIDTH];
 
 		for(int i = 0; i < node.currentState.length; i++) {
 			boolean foundRed = false;
@@ -272,7 +272,7 @@ public class MiniMax {
 
 					// Row check
 					//if ((j+1)%2 == 0) {
-						greenColPresence[j] = 1;
+					greenColPresence[j] = 1;
 					//}
 					if(!foundGreen) {
 						foundGreen = true;
@@ -307,9 +307,9 @@ public class MiniMax {
 
 					// Row check
 					//if ((j+1)%2 == 0) {
-						redColPresence[j] = 1;
+					redColPresence[j] = 1;
 					//}
-					
+
 					if(!foundRed) {
 						foundRed = true;
 						redRowScore ++;
@@ -353,15 +353,76 @@ public class MiniMax {
 			redRowScore += redColPresence[j];
 		}
 
-			score = 50*(gCtr - rCtr) 
-					+ 50*(gCtrBlack - rCtrBlack)
-					+ 8*(greenWhiteSpaces - redWhiteSpaces)
-					+ 2*(greenAttackScore - redAttackScore)
-					+ 2*(greenRowScore - redRowScore)
-					+ 4*(greenColScore - redColScore);
-			node.setScore((int)score);
+		//		if (rCtr == 0) {
+		//			score = Double.MAX_VALUE;
+		//			node.setScore((int)score);
+		//		}
+		//		else if (gCtr == 0) {
+		//			score = Double.MIN_VALUE;
+		//			node.setScore((int)score);
+		//		}
+		//		else  {
+
+		//			// #9
+		//					score = 50*(gCtr - rCtr) 
+		//							+ 20*(gCtrBlack - rCtrBlack)
+		//							+ 8*(greenWhiteSpaces - redWhiteSpaces)
+		//							+ 2*(greenAttackScore - redAttackScore)
+		//							+ 2*(greenRowScore - redRowScore)
+		//							+ 3*(greenColScore - redColScore);
+		//					node.setScore((int)score);
+
+		//			// #7
+		//					score = 50*(gCtr - rCtr) 
+		//							+ 20*(gCtrBlack - rCtrBlack)
+		//							+ 10*(greenWhiteSpaces - redWhiteSpaces)
+		//							+ 2*(greenAttackScore - redAttackScore)
+		//							+ 2*(greenRowScore - redRowScore)
+		//							+ 3*(greenColScore - redColScore);
+		//					node.setScore((int)score);
+
+		// #1
+		//					score = 200*(gCtr - rCtr) 
+		//							+ 200*(gCtrBlack - rCtrBlack)
+		//							+ 10*(greenAttackScore - redAttackScore)
+		//							+ 20*(greenRowScore - redRowScore)
+		//							+ 30*(greenColScore - redColScore);
+		//					node.setScore((int)score);
+
+		// #11
+		//		score = 50*(gCtr - rCtr) 
+		//				+ 50*(gCtrBlack - rCtrBlack)
+		//				+ 8*(greenWhiteSpaces - redWhiteSpaces)
+		//				+ 2*(greenAttackScore - redAttackScore)
+		//				+ 2*(greenRowScore - redRowScore)
+		//				+ 3*(greenColScore - redColScore);
+		//		node.setScore((int)score);
+
+
+
+		// #5
+		//			score = 300*(gCtr - rCtr) 
+		//					+ 200*(gCtrBlack - rCtrBlack)
+		//					+ 100*(greenWhiteSpaces - redWhiteSpaces)
+		//					+ 20*(greenAttackScore - redAttackScore)
+		//					+ 20*(greenRowScore - redRowScore)
+		//					+ 30*(greenColScore - redColScore);
+		//			node.setScore((int)score);
+
+		//			// #8
+		//			score = 100*(gCtr - rCtr) 
+		//					+ 20*(gCtrBlack - rCtrBlack)
+		//					+ 10*(greenWhiteSpaces - redWhiteSpaces)
+		//					+ 2*(greenAttackScore - redAttackScore)
+		//					+ 2*(greenRowScore - redRowScore)
+		//					+ 3*(greenColScore - redColScore);
+		//			node.setScore((int)score);
+
+
+
 	}
-	
+	//	}
+
 	/**
 	 * Method to calculate the number of white spaces surrounding a token
 	 * @param i
@@ -719,9 +780,8 @@ public class MiniMax {
 	 * Method to get the MiniMax board
 	 * @return
 	 */
-	public Board getBoard() {
+	public NaiveBoard getBoard() {
 		return miniMaxBoard;
 	}
 }
 
-   
